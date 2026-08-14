@@ -147,7 +147,7 @@ def engineering_agent(router_output: Any) -> Dict[str, Any]:
         raise ValueError("router_output must be a dict or JSON string")
 
     routes: List[Dict[str, Any]] = router_output.get("routes", [])
-    engineering_routes: List[Dict[str, Any]] = []
+    cost_routes: List[Dict[str, Any]] = []
 
     for route in routes:
         primary_agent = route.get("primary_agent")
@@ -166,7 +166,7 @@ def engineering_agent(router_output: Any) -> Dict[str, Any]:
         )
         analysis = analyze_cost(route, search_plan, search_results)
 
-        engineering_routes.append(
+        cost_routes.append(
             {
                 "id": route.get("id"),
                 "sub_question": sub_question,
@@ -179,5 +179,5 @@ def engineering_agent(router_output: Any) -> Dict[str, Any]:
         )
 
     return {
-        "engineering_routes": engineering_routes
+        "engineering_routes": cost_routes
     }
