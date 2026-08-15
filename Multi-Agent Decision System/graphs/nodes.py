@@ -1,4 +1,6 @@
 import json
+from typing import Any, Dict
+from shared.config import DEFAULT_FEEDBACK_MAX_RETRIES
 
 from sub_agents.cost_agent import cost_agent
 from sub_agents.performance_agent import performance_agent
@@ -8,10 +10,12 @@ from sub_agents.engineering_agent import engineering_agent
 from .states import GraphState
 from .run_store import append_event, update_run
 from top_level_agents.qea_agent import *
-from top_level_agents.router_agent import *
-from top_level_agents.planner_agent import *
+from top_level_agents.router_agent import routing_agent
+from top_level_agents.planner_agent import planning_agent
 from top_level_agents.dispatcher import dispatch_agents
-
+from top_level_agents.skeptic_agent import skeptic_agent
+from top_level_agents.feeback_agent import feedback_agent
+from top_level_agents.decision_agent import decision_agent
 
 GRAPH_VERSION = "graphs-v1"
 
@@ -167,6 +171,126 @@ def dispatcher_agent_node(state: GraphState) -> GraphState:
     router_output = state["router"]
     input_json = {"router_output": router_output}
     event_id = _start_event(state, "dispatcher_node", "dispatcher_agent", input_json)
-    output_json = {"dispatcher": dispatch_agents(router_output)}
+    dispatcher_output = dispatch_agents(router_output)
+    if not dispatcher_output.get("selected_agents"):
+        dispatcher_output["selected_agents"] = [
+            "cost_agent",
+            "engineering_agent",
+            "security_agent",
+            "performance_agent",
+        ]
+    output_json = {"dispatcher": dispatcher_output}
     _finish_event(state, "dispatcher_node", "dispatcher_agent", event_id, input_json, output_json)
+    return output_json
+
+
+def skeptic_agent_node(state: GraphState) -> GraphState:
+    user_question = state["user_question"]
+    cost_agent_output = state["cost_agent"]
+    performance_agent_output = state["performance_agent"]
+    security_agent_output = state["security_agent"]
+    engineering_agent_output = state["engineering_agent"]
+    input_json = {"user_question": user_question,
+                  "cost_agent_output":cost_agent_output,
+                  "performance_agent_output":performance_agent_output,
+                  "security_agent_output":security_agent_output,
+                  "engineering_agent_output":engineering_agent_output
+                  }
+    event_id = _start_event(state, "skeptic_node", "skeptic_agent", input_json)
+    output_json = {"skeptic": skeptic_agent(user_question,
+                                            cost_agent_output,
+                                            engineering_agent_output,
+                                            performance_agent_output,
+                                            security_agent_output
+                                            )}
+    _finish_event(state, "skeptic_node", "skeptic_agent", event_id, input_json, output_json)
+    return output_json
+
+
+def specialist_review_gate_node(state: GraphState) -> GraphState:
+    dispatcher = state.get("dispatcher", {})
+    feedback = state.get("feedback", {})
+    target_agents = feedback.get("agents_to_rerun") or dispatcher.get("selected_agents", [])
+    present_agents = [agent for agent in target_agents if state.get(agent) is not None]
+
+    input_json = {
+        "target_agents": target_agents,
+        "present_agents": present_agents,
+    }
+    event_id = _start_event(state, "specialist_review_gate", "system", input_json)
+    ready = (
+        bool(target_agents)
+        and len(present_agents) == len(target_agents)
+        and not state.get("specialist_review_ready", False)
+    )
+    output_json = {"specialist_review_ready": ready}
+    _finish_event(state, "specialist_review_gate", "system", event_id, input_json, output_json)
+    return output_json
+
+def feedback_agent_node(state:GraphState)->GraphState:
+    skeptic_output = state['skeptic']
+    user_question = state['user_question']
+    retry_round = state.get('retry_round', 0)
+    allowed_agents = state.get("dispatcher", {}).get("selected_agents", [])
+    input_json =  {
+        "user_question": user_question,
+        "skeptic_output": skeptic_output,
+        "retry_count": retry_round,
+    }
+    event_id = _start_event(state, "feedback_agent", "system", input_json)
+    feedback_output = feedback_agent(
+        user_question,
+        skeptic_output,
+        current_retry=retry_round,
+        max_retries=DEFAULT_FEEDBACK_MAX_RETRIES,
+    )
+    requested_rerun_agents = feedback_output.get("agents_to_rerun", [])
+    rerun_agents = [agent_name for agent_name in requested_rerun_agents if agent_name in allowed_agents]
+
+    if feedback_output.get("decision") == "rerun" and not rerun_agents:
+        feedback_output["decision"] = "stop"
+        feedback_output["reason"] = (
+            "rerun request filtered out because no originally selected specialist matched"
+        )
+
+    feedback_output["agents_to_rerun"] = rerun_agents
+    output_json = {
+        "feedback": feedback_output,
+        "retry_round": retry_round + (1 if feedback_output.get("decision") == "rerun" else 0),
+        "specialist_review_ready": False,
+    }
+    for agent_name in rerun_agents:
+        output_json[agent_name] = None
+    _finish_event(state, "feedback_agent", "system", event_id, input_json, output_json)
+    return output_json
+
+
+def _collect_final_specialist_outputs(state: GraphState) -> Dict[str, Any]:
+    final_specialist_outputs = {
+        "cost_agent": state.get("cost_agent"),
+        "engineering_agent": state.get("engineering_agent"),
+        "security_agent": state.get("security_agent"),
+        "performance_agent": state.get("performance_agent"),
+    }
+    return {
+        agent_name: output
+        for agent_name, output in final_specialist_outputs.items()
+        if output is not None
+    }
+
+
+def decision_agent_node(state: GraphState) -> GraphState:
+    user_question = state["user_question"]
+    final_specialist_outputs = _collect_final_specialist_outputs(state)
+    input_json = {
+        "user_question": user_question,
+        "final_specialist_outputs": final_specialist_outputs,
+    }
+    event_id = _start_event(state, "decision_node", "decision_agent", input_json)
+    decision_output = decision_agent(user_question, final_specialist_outputs)
+    output_json = {
+        "final_specialist_outputs": final_specialist_outputs,
+        "decision": decision_output,
+    }
+    _finish_event(state, "decision_node", "decision_agent", event_id, input_json, output_json)
     return output_json
