@@ -56,6 +56,7 @@ Return only valid JSON in exactly this format:
 }
 """
 
+
 SEARCH_PROMPT_EA = """You are a search query planner for an engineering-analysis agent.
 
 Your job is to turn one routed engineering-related question into 3 focused web search queries.
