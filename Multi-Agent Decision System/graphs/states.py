@@ -20,4 +20,9 @@ class GraphState(TypedDict):
     engineering_agent: Dict[str, Any]
     security_agent: Dict[str, Any]
     performance_agent: Dict[str, Any]
-    critic: Dict[str, Any]
+    skeptic: Dict[str, Any]
+    specialist_review_ready: bool
+    feedback: Dict[str,Any]
+    retry_round: int
+    final_specialist_outputs: Dict[str, Any]
+    decision: Dict[str,Any]
