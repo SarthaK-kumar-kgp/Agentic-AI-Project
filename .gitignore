@@ -1,0 +1,11 @@
+.env
+*.md
+!README.md
+*.pdf
+agents/
+__pycache__/
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
+graphs/runs.sqlite3
+graphs/log_analysis.ipynb
