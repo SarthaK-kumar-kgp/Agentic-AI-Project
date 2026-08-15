@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from shared.config import DEEPSEEK_BASE_URL
 from top_level_agents.prompts import *
 from top_level_agents.qea_agent import *
 from top_level_agents.planner_agent import *
@@ -20,7 +21,7 @@ api_key = os.getenv("DEEPSEEK_API_KEY")
 
 client = OpenAI(
     api_key=api_key,
-    base_url="https://api.deepseek.com",
+    base_url=DEEPSEEK_BASE_URL,
 )
 
 user_question = input("Enter your question: ")

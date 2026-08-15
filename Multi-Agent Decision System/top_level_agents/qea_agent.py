@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
 from .prompts import *
 load_dotenv()
 
@@ -10,7 +11,7 @@ api_key = os.getenv("DEEPSEEK_API_KEY")
 
 client = OpenAI(
     api_key=api_key,
-    base_url="https://api.deepseek.com",
+    base_url=DEEPSEEK_BASE_URL,
 )
 
 # # Test models endpoint
@@ -27,7 +28,7 @@ client = OpenAI(
 def enrich_question(user_question):
     prompt = QUESTION_ENRICHMENT_AGENT 
     response = client.chat.completions.create(
-        model = "deepseek-v4-flash",
+        model = DEEPSEEK_MODEL,
         messages = [
             {"role": "system", "content": prompt},
             {"role": "user", "content": user_question}

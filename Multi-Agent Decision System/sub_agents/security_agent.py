@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
 from .prompts import *
 from .tools import calculator, parallel_search
 
@@ -15,7 +16,7 @@ deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
 
 client = OpenAI(
     api_key=deepseek_api_key,
-    base_url="https://api.deepseek.com",
+    base_url=DEEPSEEK_BASE_URL,
 )
 
 
@@ -31,7 +32,7 @@ def generate_search_plan(sub_question: str, user_question: str) -> Dict[str, Any
     }
 
     response = client.chat.completions.create(
-        model="deepseek-v4-flash",
+        model=DEEPSEEK_MODEL,
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": json.dumps(payload, indent=2)},
@@ -71,7 +72,7 @@ def analyze_security(
     }
 
     response = client.chat.completions.create(
-        model="deepseek-v4-flash",
+        model=DEEPSEEK_MODEL,
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": json.dumps(payload, indent=2)},
@@ -126,7 +127,7 @@ def revise_security(
     }
 
     response = client.chat.completions.create(
-        model="deepseek-v4-flash",
+        model=DEEPSEEK_MODEL,
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": json.dumps(payload, indent=2)},

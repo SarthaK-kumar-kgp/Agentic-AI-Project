@@ -2,6 +2,7 @@ import os
 from typing import Optional
 from openai import OpenAI
 from dotenv import load_dotenv
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
 from .prompts import *
 load_dotenv()
 import json
@@ -9,7 +10,7 @@ import json
 
 api_key = os.getenv("DEEPSEEK_API_KEY")
 
-client = OpenAI(api_key=api_key,base_url="https://api.deepseek.com")
+client = OpenAI(api_key=api_key, base_url=DEEPSEEK_BASE_URL)
 
 def skeptic_agent(original_question:str,cost_agent:Optional[dict],
                   engineering_agent:Optional[dict],performance_agent:Optional[dict],security_agent:Optional[dict]):
@@ -22,7 +23,7 @@ def skeptic_agent(original_question:str,cost_agent:Optional[dict],
             "security_agent":security_agent
         }
     response = client.chat.completions.create(
-                model  = "deepseek-v4-flash",
+                model=DEEPSEEK_MODEL,
                 messages=[
                     {"role":"system","content":prompt},
                     {"role":"user","content":json.dumps(payload)}
