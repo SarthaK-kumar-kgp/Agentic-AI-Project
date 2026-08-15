@@ -84,31 +84,7 @@ def analyze_cost(
     )
 
     content = response.choices[0].message.content.strip()
-    try:
-        analysis = _parse_json(content)
-    except Exception:
-        analysis = {
-            "sub_question": route.get("sub_question", ""),
-            "summary": content,
-            "evidence": [],
-            "assumptions": [],
-            "calculation": "",
-            "cost_impact": "",
-            "confidence": "low",
-            "open_issues": ["Model output was not valid JSON"],
-        }
-
-    if not isinstance(analysis, dict):
-        analysis = {
-            "sub_question": route.get("sub_question", ""),
-            "summary": str(analysis),
-            "evidence": [],
-            "assumptions": [],
-            "calculation": "",
-            "cost_impact": "",
-            "confidence": "low",
-            "open_issues": ["Model output was not a JSON object"],
-        }
+    analysis = _parse_json(content)
 
     calculation_expression = str(analysis.get("calculation", "")).strip()
     if calculation_expression and re.search(r"[0-9]", calculation_expression):
