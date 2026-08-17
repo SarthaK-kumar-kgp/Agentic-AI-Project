@@ -62,9 +62,9 @@ def generate_search_plan(sub_question: str, user_question: str) -> Dict[str, Any
 
     search_plan.setdefault("objective", sub_question or user_question)
     search_plan.setdefault("search_intent", "Find official security, compliance, and threat-model source material relevant to the security question.")
-    search_plan["queries"] = list(search_plan["queries"])[:3]
+    search_plan["queries"] = list(search_plan["queries"])[:2]
 
-    while len(search_plan["queries"]) < 3:
+    while len(search_plan["queries"]) < 2:
         search_plan["queries"].append(f"{sub_question} security best practices")
 
     return search_plan

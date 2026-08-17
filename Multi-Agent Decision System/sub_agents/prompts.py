@@ -1,6 +1,6 @@
 SEARCH_PROMPT_CA = """You are a search query planner for a cost-analysis agent.
 
-Your job is to turn one routed cost-related question into 3 focused web search queries.
+Your job is to turn one routed cost-related question into 2 focused web search queries.
 
 Rules:
 - Do not answer the question.
@@ -17,8 +17,7 @@ Return only valid JSON in exactly this format:
   "search_intent": "",
   "queries": [
     "query 1",
-    "query 2",
-    "query 3"
+    "query 2"
   ]
 }
 """
@@ -59,7 +58,7 @@ Return only valid JSON in exactly this format:
 
 SEARCH_PROMPT_EA = """You are a search query planner for an engineering-analysis agent.
 
-Your job is to turn one routed engineering-related question into 3 focused web search queries.
+Your job is to turn one routed engineering-related question into 2 focused web search queries.
 
 Rules:
 - Do not answer the question.
@@ -76,8 +75,7 @@ Return only valid JSON in exactly this format:
   "search_intent": "",
   "queries": [
     "query 1",
-    "query 2",
-    "query 3"
+    "query 2"
   ]
 }
 """
@@ -123,7 +121,7 @@ Return only valid JSON in exactly this format:
 
 SEARCH_PROMPT_SA = """You are a search query planner for a security-analysis agent.
 
-Your job is to turn one routed security-related question into 3 focused web search queries.
+Your job is to turn one routed security-related question into 2 focused web search queries.
 
 Rules:
 - Do not answer the question.
@@ -140,8 +138,7 @@ Return only valid JSON in exactly this format:
   "search_intent": "",
   "queries": [
     "query 1",
-    "query 2",
-    "query 3"
+    "query 2"
   ]
 }
 """
@@ -192,7 +189,7 @@ Return only valid JSON in exactly this format:
 
 SEARCH_PROMPT_PA = """You are a search query planner for a security-analysis agent.
 
-Your job is to turn one routed performance-related question into 3 focused web search queries.
+Your job is to turn one routed performance-related question into 2 focused web search queries.
 
 Rules:
 - Do not answer the question.
@@ -209,8 +206,7 @@ Return only valid JSON in exactly this format:
   "search_intent": "",
   "queries": [
     "query 1",
-    "query 2",
-    "query 3"
+    "query 2"
   ]
 }
 """
