@@ -21,7 +21,19 @@ client = OpenAI(
 
 
 def _parse_json(content: str) -> Dict[str, Any]:
-    return json.loads(content)
+    cleaned = content.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned, flags=re.IGNORECASE)
+        cleaned = re.sub(r"\s*```$", "", cleaned)
+
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            return json.loads(cleaned[start : end + 1])
+        raise
 
 
 def generate_search_plan(sub_question: str, user_question: str) -> Dict[str, Any]:
