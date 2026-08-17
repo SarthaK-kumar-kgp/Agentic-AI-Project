@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from openai import OpenAI
 from dotenv import load_dotenv
-from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, SKEPTIC_MAX_TOKENS
 from .prompts import *
 load_dotenv()
 import json
@@ -29,7 +29,7 @@ def skeptic_agent(original_question:str,cost_agent:Optional[dict],
                     {"role":"user","content":json.dumps(payload)}
                 ],
                     temperature=0.2,
-                        max_tokens = 1200,
+                        max_tokens = SKEPTIC_MAX_TOKENS,
                         extra_body={
                                     "thinking": {"type": "disabled"}
                                 }

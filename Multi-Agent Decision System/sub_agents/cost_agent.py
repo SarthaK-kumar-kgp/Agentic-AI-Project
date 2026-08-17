@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, SPECIALIST_MAX_TOKENS
 from .prompts import *
 from .tools import calculator, parallel_search
 
@@ -90,7 +90,7 @@ def analyze_cost(
             {"role": "user", "content": json.dumps(payload, indent=2)},
         ],
         temperature=0.3,
-        max_tokens=2000,
+        max_tokens=SPECIALIST_MAX_TOKENS,
         extra_body={
             "thinking": {"type": "disabled"}
         },
@@ -137,7 +137,7 @@ def revise_cost(
             {"role": "user", "content": json.dumps(payload, indent=2)},
         ],
         temperature=0.3,
-        max_tokens=2000,
+        max_tokens=SPECIALIST_MAX_TOKENS,
         extra_body={
             "thinking": {"type": "disabled"}
         },

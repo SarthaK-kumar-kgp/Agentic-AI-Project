@@ -1,8 +1,8 @@
 from pathlib import Path
-import sys
 
 from graphs.graph import graph
 from graphs.run_store import DEFAULT_DB_PATH, create_run, update_run
+from graphs.visualization import render_workflow_graph
 from sub_agents.sub_agents import agent_registry
 import warnings
 warnings.simplefilter("ignore")
@@ -35,7 +35,9 @@ update_run(
 )
 
 output_path = Path(__file__).with_name("graph.png")
-graph.get_graph().draw_mermaid_png(output_file_path=str(output_path))
+svg_path = Path(__file__).with_name("graph.svg")
+dot_path = Path(__file__).with_name("graph.dot")
+render_workflow_graph(output_png=output_path, output_dot=dot_path, output_svg=svg_path)
 
 # print(result)
 # print(result["planner"])

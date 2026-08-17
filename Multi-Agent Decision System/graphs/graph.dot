@@ -1,0 +1,202 @@
+digraph MultiAgentDecisionSystem {
+    graph [
+        rankdir=TB,
+        bgcolor="white",
+        pad="0.35",
+        nodesep="0.45",
+        ranksep="0.8",
+        splines=polyline,
+        fontname="Helvetica",
+        concentrate=true
+    ];
+
+    node [
+        shape=box,
+        style="rounded,filled",
+        fontname="Helvetica",
+        color="#3b82f6",
+        fillcolor="#dbeafe",
+        penwidth=1.3,
+        margin="0.18,0.12"
+    ];
+
+    edge [
+        color="#6b7280",
+        penwidth=1.15,
+        arrowsize=0.8,
+        fontname="Helvetica"
+    ];
+
+    subgraph cluster_level_1 {
+        style="invis";
+        rank=same;
+        "enrich_question" [
+            label="enrich_question",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_2 {
+        style="invis";
+        rank=same;
+        "ask_follow_up_questions" [
+            label="ask_follow_up_questions",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_3 {
+        style="invis";
+        rank=same;
+        "planner_node" [
+            label="planner_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_4 {
+        style="invis";
+        rank=same;
+        "router_node" [
+            label="router_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_5 {
+        style="invis";
+        rank=same;
+        "dispatcher_node" [
+            label="dispatcher_node",
+            shape=diamond,
+            fillcolor="#fef3c7",
+            color="#f59e0b",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_6 {
+        style="invis";
+        rank=same;
+        "cost_agent_node" [
+            label="cost_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+        "engineering_agent_node" [
+            label="engineering_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+        "performance_agent_node" [
+            label="performance_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+        "security_agent_node" [
+            label="security_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_7 {
+        style="invis";
+        rank=same;
+        "specialist_review_gate" [
+            label="specialist_review_gate",
+            shape=diamond,
+            fillcolor="#fef3c7",
+            color="#f59e0b",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_8 {
+        style="invis";
+        rank=same;
+        "skeptic_agent_node" [
+            label="skeptic_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_9 {
+        style="invis";
+        rank=same;
+        "feedback_agent_node" [
+            label="feedback_agent_node",
+            shape=diamond,
+            fillcolor="#fef3c7",
+            color="#f59e0b",
+            fontcolor="#111827"
+        ];
+    }
+
+    subgraph cluster_level_10 {
+        style="invis";
+        rank=same;
+        "decision_agent_node" [
+            label="decision_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+    }
+
+    "__start__" -> "enrich_question" [color="#111827"];
+    "ask_follow_up_questions" -> "planner_node";
+    "cost_agent_node" -> "specialist_review_gate";
+    "decision_agent_node" -> "__end__" [color="#16a34a"];
+    "engineering_agent_node" -> "specialist_review_gate";
+    "enrich_question" -> "ask_follow_up_questions";
+    "performance_agent_node" -> "specialist_review_gate";
+    "planner_node" -> "router_node";
+    "router_node" -> "dispatcher_node";
+    "security_agent_node" -> "specialist_review_gate";
+    "skeptic_agent_node" -> "feedback_agent_node";
+    "dispatcher_node" -> "cost_agent_node" [style="dashed", color="#dc2626"];
+    "dispatcher_node" -> "engineering_agent_node" [style="dashed", color="#dc2626"];
+    "dispatcher_node" -> "performance_agent_node" [style="dashed", color="#dc2626"];
+    "dispatcher_node" -> "security_agent_node" [style="dashed", color="#dc2626"];
+    "feedback_agent_node" -> "cost_agent_node" [style="dashed", color="#dc2626", constraint=false];
+    "feedback_agent_node" -> "decision_agent_node" [style="dashed", color="#dc2626"];
+    "feedback_agent_node" -> "engineering_agent_node" [style="dashed", color="#dc2626", constraint=false];
+    "feedback_agent_node" -> "performance_agent_node" [style="dashed", color="#dc2626", constraint=false];
+    "feedback_agent_node" -> "security_agent_node" [style="dashed", color="#dc2626", constraint=false];
+    "specialist_review_gate" -> "skeptic_agent_node" [style="dashed", color="#dc2626"];
+}
