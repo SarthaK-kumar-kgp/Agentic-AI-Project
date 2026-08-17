@@ -4,6 +4,8 @@ from typing import Any, Dict, List, Sequence
 import requests
 from langchain_core.tools import tool
 
+from shared.config import SEARCH_MAX_EXCERPT_CHARS, SEARCH_MAX_EXCERPTS_PER_RESULT, SEARCH_TOP_K
+
 try:
     import numexpr as ne
 except ImportError:
@@ -12,6 +14,13 @@ except ImportError:
 
 
 PARALLEL_SEARCH_URL = "https://api.parallel.ai/v1/search"
+
+
+def _truncate_text(text: Any, max_chars: int) -> str:
+    value = str(text or "").strip()
+    if len(value) <= max_chars:
+        return value
+    return value[: max_chars - 3].rstrip() + "..."
 
 
 def _parallel_headers() -> Dict[str, str]:
@@ -24,7 +33,7 @@ def _parallel_headers() -> Dict[str, str]:
     }
 
 
-def parallel_search(objective: str, search_queries: Sequence[str], top_k: int = 3) -> Dict[str, Any]:
+def parallel_search(objective: str, search_queries: Sequence[str], top_k: int = SEARCH_TOP_K) -> Dict[str, Any]:
     """
     Run a Parallel web search with one objective and multiple query variants.
 
@@ -51,12 +60,17 @@ def parallel_search(objective: str, search_queries: Sequence[str], top_k: int = 
 
     normalized_results: List[Dict[str, Any]] = []
     for item in raw_results[:top_k]:
+        excerpts = []
+        for excerpt in (item.get("excerpts", []) or [])[:SEARCH_MAX_EXCERPTS_PER_RESULT]:
+            cleaned_excerpt = _truncate_text(excerpt, SEARCH_MAX_EXCERPT_CHARS)
+            if cleaned_excerpt and cleaned_excerpt not in excerpts:
+                excerpts.append(cleaned_excerpt)
         normalized_results.append(
             {
                 "title": item.get("title"),
                 "url": item.get("url") or item.get("link"),
                 "publish_date": item.get("publish_date"),
-                "excerpts": item.get("excerpts", []),
+                "excerpts": excerpts,
             }
         )
 

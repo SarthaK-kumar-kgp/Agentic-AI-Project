@@ -5,7 +5,7 @@ from typing import Any, Dict
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL
+from shared.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, FINAL_AGENT_MAX_TOKENS
 from .prompts import DECISION_AGENT
 
 load_dotenv()
@@ -46,7 +46,7 @@ def decision_agent(
             {"role": "user", "content": json.dumps(payload, indent=2)},
         ],
         temperature=0.2,
-        max_tokens=1200,
+        max_tokens=FINAL_AGENT_MAX_TOKENS,
         extra_body={
             "thinking": {"type": "disabled"}
         },
