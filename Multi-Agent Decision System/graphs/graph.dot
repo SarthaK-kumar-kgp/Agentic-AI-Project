@@ -27,6 +27,73 @@ digraph MultiAgentDecisionSystem {
         fontname="Helvetica"
     ];
 
+    subgraph cluster_level_0 {
+        style="invis";
+        rank=same;
+        "feedback_agent_node" [
+            label="feedback_agent_node",
+            shape=diamond,
+            fillcolor="#fef3c7",
+            color="#f59e0b",
+            fontcolor="#111827"
+        ];
+        "specialist_review_gate" [
+            label="specialist_review_gate",
+            shape=diamond,
+            fillcolor="#fef3c7",
+            color="#f59e0b",
+            fontcolor="#111827"
+        ];
+        "decision_agent_node" [
+            label="decision_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+        "skeptic_agent_node" [
+            label="skeptic_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dcfce7",
+            color="#22c55e",
+            fontcolor="#111827"
+        ];
+        "cost_agent_node" [
+            label="cost_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+        "engineering_agent_node" [
+            label="engineering_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+        "performance_agent_node" [
+            label="performance_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+        "security_agent_node" [
+            label="security_agent_node",
+            shape=box,
+            style="rounded,filled",
+            fillcolor="#dbeafe",
+            color="#3b82f6",
+            fontcolor="#111827"
+        ];
+    }
+
     subgraph cluster_level_1 {
         style="invis";
         rank=same;
@@ -91,93 +158,6 @@ digraph MultiAgentDecisionSystem {
         ];
     }
 
-    subgraph cluster_level_6 {
-        style="invis";
-        rank=same;
-        "cost_agent_node" [
-            label="cost_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-        "engineering_agent_node" [
-            label="engineering_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-        "performance_agent_node" [
-            label="performance_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-        "security_agent_node" [
-            label="security_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-    }
-
-    subgraph cluster_level_7 {
-        style="invis";
-        rank=same;
-        "specialist_review_gate" [
-            label="specialist_review_gate",
-            shape=diamond,
-            fillcolor="#fef3c7",
-            color="#f59e0b",
-            fontcolor="#111827"
-        ];
-    }
-
-    subgraph cluster_level_8 {
-        style="invis";
-        rank=same;
-        "skeptic_agent_node" [
-            label="skeptic_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-    }
-
-    subgraph cluster_level_9 {
-        style="invis";
-        rank=same;
-        "feedback_agent_node" [
-            label="feedback_agent_node",
-            shape=diamond,
-            fillcolor="#fef3c7",
-            color="#f59e0b",
-            fontcolor="#111827"
-        ];
-    }
-
-    subgraph cluster_level_10 {
-        style="invis";
-        rank=same;
-        "decision_agent_node" [
-            label="decision_agent_node",
-            shape=box,
-            style="rounded,filled",
-            fillcolor="#dcfce7",
-            color="#22c55e",
-            fontcolor="#111827"
-        ];
-    }
-
     "__start__" -> "enrich_question" [color="#111827"];
     "ask_follow_up_questions" -> "planner_node";
     "cost_agent_node" -> "specialist_review_gate";
@@ -189,14 +169,6 @@ digraph MultiAgentDecisionSystem {
     "router_node" -> "dispatcher_node";
     "security_agent_node" -> "specialist_review_gate";
     "skeptic_agent_node" -> "feedback_agent_node";
-    "dispatcher_node" -> "cost_agent_node" [style="dashed", color="#dc2626"];
-    "dispatcher_node" -> "engineering_agent_node" [style="dashed", color="#dc2626"];
-    "dispatcher_node" -> "performance_agent_node" [style="dashed", color="#dc2626"];
-    "dispatcher_node" -> "security_agent_node" [style="dashed", color="#dc2626"];
-    "feedback_agent_node" -> "cost_agent_node" [style="dashed", color="#dc2626", constraint=false];
-    "feedback_agent_node" -> "decision_agent_node" [style="dashed", color="#dc2626"];
-    "feedback_agent_node" -> "engineering_agent_node" [style="dashed", color="#dc2626", constraint=false];
-    "feedback_agent_node" -> "performance_agent_node" [style="dashed", color="#dc2626", constraint=false];
-    "feedback_agent_node" -> "security_agent_node" [style="dashed", color="#dc2626", constraint=false];
-    "specialist_review_gate" -> "skeptic_agent_node" [style="dashed", color="#dc2626"];
+    "feedback_agent_node" -> "decision_agent_node" [style="dashed", color="#dc2626", constraint=false];
+    "specialist_review_gate" -> "skeptic_agent_node" [style="dashed", color="#dc2626", constraint=false];
 }

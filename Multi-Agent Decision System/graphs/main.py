@@ -51,6 +51,11 @@ args = _parse_args()
 
 if args.resume:
     run_id = args.resume
+    run_row = fetch_run(run_id, db_path=DEFAULT_DB_PATH)
+    print(
+        f"RESUME {run_id} | node={run_row['current_node'] if run_row else 'unknown'} "
+        f"| iter={run_row['current_iteration'] if run_row else 'unknown'}"
+    )
     resume_run(
         run_id,
         db_path=DEFAULT_DB_PATH,

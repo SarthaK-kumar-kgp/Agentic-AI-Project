@@ -24,6 +24,7 @@ def _start_event(state: GraphState, node_name: str, agent_name: str, input_json)
     run_id = state["run_id"]
     db_path = state["db_path"]
     current_iteration = state.get("current_iteration", state.get("retry_round", 0))
+    print(f"RUN {run_id} | iter={current_iteration} | node={node_name} | status=start")
     update_run(
         run_id,
         db_path=db_path,
