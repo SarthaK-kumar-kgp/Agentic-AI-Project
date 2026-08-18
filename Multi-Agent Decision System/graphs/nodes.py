@@ -23,13 +23,20 @@ GRAPH_VERSION = "graphs-v1"
 def _start_event(state: GraphState, node_name: str, agent_name: str, input_json):
     run_id = state["run_id"]
     db_path = state["db_path"]
-    update_run(run_id, db_path=db_path, current_node=node_name, current_iteration=0)
+    current_iteration = state.get("current_iteration", state.get("retry_round", 0))
+    update_run(
+        run_id,
+        db_path=db_path,
+        current_node=node_name,
+        current_iteration=current_iteration,
+    )
     return append_event(
         run_id,
         node_name,
         "input",
         db_path=db_path,
         agent_name=agent_name,
+        iteration=current_iteration,
         input_json=input_json,
         status="running",
     )
@@ -38,6 +45,7 @@ def _start_event(state: GraphState, node_name: str, agent_name: str, input_json)
 def _finish_event(state: GraphState, node_name: str, agent_name: str, parent_event_id: str, input_json, output_json):
     run_id = state["run_id"]
     db_path = state["db_path"]
+    current_iteration = state.get("current_iteration", state.get("retry_round", 0))
     return append_event(
         run_id,
         node_name,
@@ -45,6 +53,7 @@ def _finish_event(state: GraphState, node_name: str, agent_name: str, parent_eve
         db_path=db_path,
         agent_name=agent_name,
         parent_event_id=parent_event_id,
+        iteration=current_iteration,
         input_json=input_json,
         output_json=output_json,
         status="succeeded",
@@ -56,6 +65,25 @@ def _agent_selected(state: GraphState, agent_name: str) -> bool:
     if not dispatcher:
         return True
     return agent_name in dispatcher.get("selected_agents", [])
+
+
+def _specialist_revision_context(state: GraphState, agent_name: str) -> Dict[str, Any]:
+    feedback = state.get("feedback", {}) or {}
+    if feedback.get("decision") != "rerun":
+        return {}
+    if agent_name not in feedback.get("agents_to_rerun", []):
+        return {}
+
+    previous_outputs = state.get("previous_specialist_outputs", {}) or {}
+    previous_output = previous_outputs.get(agent_name)
+    if previous_output is None:
+        return {}
+
+    return {
+        "feedback": feedback,
+        "mode": "revision",
+        "previous_output": previous_output,
+    }
 
 
 def enrich_question_node(state: GraphState) -> GraphState:
@@ -113,7 +141,8 @@ def cost_agent_node(state:GraphState) -> GraphState:
         output_json = {"cost_agent": {"cost_routes": []}}
         _finish_event(state, "cost_analysis_node", "cost_agent", event_id, input_json, output_json)
         return output_json
-    cost_agent_output = cost_agent(router_output)
+    revision_context = _specialist_revision_context(state, "cost_agent")
+    cost_agent_output = cost_agent(router_output, **revision_context)
     output_json = {"cost_agent": cost_agent_output}
     _finish_event(state, "cost_analysis_node", "cost_agent", event_id, input_json, output_json)
     return output_json
@@ -129,7 +158,8 @@ def performance_agent_node(state:GraphState) -> GraphState:
         output_json = {"performance_agent": {"performance_routes": []}}
         _finish_event(state, "performance_analysis_node", "performance_agent", event_id, input_json, output_json)
         return output_json
-    performance_agent_output = performance_agent(router_output)
+    revision_context = _specialist_revision_context(state, "performance_agent")
+    performance_agent_output = performance_agent(router_output, **revision_context)
     output_json = {"performance_agent": performance_agent_output}
     _finish_event(state, "performance_analysis_node", "performance_agent", event_id, input_json, output_json)
     return output_json
@@ -145,7 +175,8 @@ def security_agent_node(state:GraphState) -> GraphState:
         output_json = {"security_agent": {"security_routes": []}}
         _finish_event(state, "security_analysis_node", "security_agent", event_id, input_json, output_json)
         return output_json
-    security_agent_output = security_agent(router_output)
+    revision_context = _specialist_revision_context(state, "security_agent")
+    security_agent_output = security_agent(router_output, **revision_context)
     output_json = {"security_agent": security_agent_output}
     _finish_event(state, "security_analysis_node", "security_agent", event_id, input_json, output_json)
     return output_json
@@ -161,7 +192,8 @@ def engineering_agent_node(state:GraphState) -> GraphState:
         output_json = {"engineering_agent": {"engineering_routes": []}}
         _finish_event(state, "engineering_analysis_node", "engineering_agent", event_id, input_json, output_json)
         return output_json
-    engineering_agent_output = engineering_agent(router_output)
+    revision_context = _specialist_revision_context(state, "engineering_agent")
+    engineering_agent_output = engineering_agent(router_output, **revision_context)
     output_json = {"engineering_agent": engineering_agent_output}
     _finish_event(state, "engineering_analysis_node", "engineering_agent", event_id, input_json, output_json)
     return output_json
@@ -254,10 +286,17 @@ def feedback_agent_node(state:GraphState)->GraphState:
         )
 
     feedback_output["agents_to_rerun"] = rerun_agents
+    previous_specialist_outputs = {
+        agent_name: state.get(agent_name)
+        for agent_name in rerun_agents
+        if state.get(agent_name) is not None
+    }
     output_json = {
         "feedback": feedback_output,
         "retry_round": retry_round + (1 if feedback_output.get("decision") == "rerun" else 0),
+        "current_iteration": retry_round + (1 if feedback_output.get("decision") == "rerun" else 0),
         "specialist_review_ready": False,
+        "previous_specialist_outputs": previous_specialist_outputs,
     }
     for agent_name in rerun_agents:
         output_json[agent_name] = None

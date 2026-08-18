@@ -10,6 +10,7 @@ class GraphState(TypedDict):
     user_question: str
     run_id: str
     db_path: str
+    current_iteration: int
     question_list: List[str]
     enriched_context: Dict[str, Any]
     planner: Any

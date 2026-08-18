@@ -1,6 +1,12 @@
 from langgraph.graph import StateGraph, START, END
 from .states import GraphState
 from .nodes import *
+from .persistence_fxn import (
+    route_after_feedback,
+    route_from_dispatcher,
+    route_from_specialist_gate,
+)
+from .sqlite_checkpointer import SqliteCheckpointSaver
 
 builder =StateGraph(GraphState)
 
@@ -25,47 +31,7 @@ builder.add_edge("ask_follow_up_questions", "planner_node")
 builder.add_edge("planner_node", "router_node")
 builder.add_edge("router_node", "dispatcher_node")
 
-
-def route_from_dispatcher(state: GraphState):
-    selected_agents = state.get("dispatcher", {}).get("selected_agents", [])
-    next_nodes = []
-
-    if "cost_agent" in selected_agents:
-        next_nodes.append("cost_agent_node")
-    if "engineering_agent" in selected_agents:
-        next_nodes.append("engineering_agent_node")
-    if "security_agent" in selected_agents:
-        next_nodes.append("security_agent_node")
-    if "performance_agent" in selected_agents:
-        next_nodes.append("performance_agent_node")
-
-    return next_nodes
-
-def route_after_feedback(state: GraphState):
-    feedback = state.get("feedback", {})
-
-    if feedback.get("decision") == "rerun":
-        selected_agents = feedback.get("agents_to_rerun", [])
-        next_nodes = []
-
-        if "cost_agent" in selected_agents:
-            next_nodes.append("cost_agent_node")
-        if "engineering_agent" in selected_agents:
-            next_nodes.append("engineering_agent_node")
-        if "security_agent" in selected_agents:
-            next_nodes.append("security_agent_node")
-        if "performance_agent" in selected_agents:
-            next_nodes.append("performance_agent_node")
-
-        return next_nodes
-
-    return "decision_agent_node"
-
 builder.add_conditional_edges("dispatcher_node", route_from_dispatcher)
-
-
-def route_from_specialist_gate(state: GraphState):
-    return bool(state.get("specialist_review_ready", False))
 
 
 builder.add_edge("cost_agent_node", "specialist_review_gate")
@@ -83,7 +49,4 @@ builder.add_conditional_edges(
 builder.add_edge("skeptic_agent_node", "feedback_agent_node")
 builder.add_conditional_edges("feedback_agent_node", route_after_feedback)
 builder.add_edge("decision_agent_node", END)
-
-
-
-graph  = builder.compile()
+graph = builder.compile(checkpointer=SqliteCheckpointSaver())
