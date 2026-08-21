@@ -1,0 +1,50 @@
+[
+  {
+    "id": "task-a",
+    "title": "Find why auth tests fail",
+    "prompt": "Analyze this repository and find why tests/test_auth.py fails. Explain the root cause before changing code.",
+    "target_tests": ["tests/test_auth.py"],
+    "expected_learning": ["Username lookup should use a normalized lowercase key."]
+  },
+  {
+    "id": "task-b",
+    "title": "Fix the authentication bug",
+    "prompt": "Fix the authentication bug and verify tests/test_auth.py passes.",
+    "target_tests": ["tests/test_auth.py"],
+    "expected_files": ["src/taskflow/auth.py"]
+  },
+  {
+    "id": "task-c",
+    "title": "Add missing email validation",
+    "prompt": "Fix the missing email validation rule so invalid email addresses are rejected.",
+    "target_tests": ["tests/test_validation.py", "tests/test_api.py"],
+    "expected_files": ["src/taskflow/validation.py"]
+  },
+  {
+    "id": "task-d",
+    "title": "Fix wrong login status code",
+    "prompt": "Find why the login API returns the wrong status code for bad credentials and fix it.",
+    "target_tests": ["tests/test_api.py"],
+    "expected_files": ["src/taskflow/api.py"]
+  },
+  {
+    "id": "task-e",
+    "title": "Run full suite and explain failures",
+    "prompt": "Run the full test suite, identify each failure, and report the likely source file for each one.",
+    "target_tests": ["tests"],
+    "expected_learning": [
+      "Auth failures point to username normalization.",
+      "API status failure points to login error handling.",
+      "Validation failures point to email validation.",
+      "Invoice failure points to percentage discount math."
+    ]
+  },
+  {
+    "id": "task-f",
+    "title": "Fix recurring percentage calculation",
+    "prompt": "Fix the invoice discount calculation and verify tests/test_invoices.py passes.",
+    "target_tests": ["tests/test_invoices.py"],
+    "expected_files": ["src/taskflow/invoices.py"],
+    "expected_learning": ["Percentage discounts should be computed from subtotal, not subtracted as raw cents."]
+  }
+]
