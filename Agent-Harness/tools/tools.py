@@ -1,5 +1,7 @@
 from pathlib import Path
 import difflib
+import shlex
+import subprocess
 
 TARGET_REPO = Path(__file__).resolve().parents[1] / "fixtures" / "sample_python_repo"
 
@@ -141,7 +143,57 @@ def run_command(command:str):
     Args:
         command (str): The command to run.
     """
-    return None 
+    command_parts = shlex.split(command)
+
+    if command_parts[:3] != ["python3", "-m", "pytest"]:
+        return {
+            "output": None,
+            "error": "Command is not allowed.",
+            "success": False,
+        }
+
+    target_root = TARGET_REPO.resolve()
+    for path_arg in command_parts[3:]:
+        if path_arg.startswith("-"):
+            return {
+                "output": None,
+                "error": "Pytest flags are not allowed yet.",
+                "success": False,
+            }
+
+        requested_path = (target_root / path_arg).resolve()
+        if requested_path != target_root and target_root not in requested_path.parents:
+            return {
+                "output": None,
+                "error": "Pytest path is outside the target repo.",
+                "success": False,
+            }
+
+    try:
+        output = subprocess.run(
+            command_parts,
+            cwd=TARGET_REPO,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "output": None,
+            "error": "Command timed out.",
+            "success": False,
+        }
+
+    return {
+        "output": {
+            "stdout": output.stdout,
+            "stderr": output.stderr,
+            "exit_code": output.returncode
+        },
+        "error": None,
+        "success": output.returncode == 0
+    }
 
 def search(file_list:list, pattern:str):
     """
@@ -152,6 +204,3 @@ def search(file_list:list, pattern:str):
         pattern (str): The pattern to match (e.g., '*.txt').
     """
     return [file for file in file_list if pattern in str(file)]
-
-
-
