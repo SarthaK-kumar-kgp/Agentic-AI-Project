@@ -34,7 +34,7 @@ TOOLS = {
 }
 
 
-def run_tools(tool_name:str,tool_input: dict):
+def run_tools(tool_name:str,tool_input: dict, workspace_path=None):
     """
     Run a tool by name with the provided input.
 
@@ -48,6 +48,10 @@ def run_tools(tool_name:str,tool_input: dict):
             "error": f"Tool '{tool_name}' not found.",
             "success": False,
         }
+
+    if workspace_path is not None:
+        tool_input = dict(tool_input)
+        tool_input["workspace_path"] = workspace_path
 
     # try:
     result = TOOLS[tool_name](**tool_input)

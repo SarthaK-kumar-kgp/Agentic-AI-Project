@@ -22,4 +22,4 @@ def subtotal_cents(lines: list[InvoiceLine]) -> int:
 def total_after_discount_cents(lines: list[InvoiceLine], discount_percent: int) -> int:
     require_positive_int(discount_percent, "discount_percent")
     subtotal = subtotal_cents(lines)
-    return subtotal - (subtotal * discount_percent // 100)
+    return subtotal - discount_percent
