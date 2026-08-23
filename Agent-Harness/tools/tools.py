@@ -2,6 +2,7 @@ from pathlib import Path
 import difflib
 import shlex
 import subprocess
+import sys
 
 TARGET_REPO = Path(__file__).resolve().parents[1] / "fixtures" / "sample_python_repo"
 
@@ -170,6 +171,7 @@ def run_command(command:str):
             }
 
     try:
+        command_parts[0] = sys.executable
         output = subprocess.run(
             command_parts,
             cwd=TARGET_REPO,
