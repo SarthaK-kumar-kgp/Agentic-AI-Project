@@ -51,12 +51,13 @@ class RealPlanner:
             base_url=DEEPSEEK_BASE_URL,
         )
 
-    def decide(self,iteration_number,user_question:str,latest_observation=None):
+    def decide(self,iteration_number,user_question:str,latest_observation=None,recent_history=None):
         prompt = AGENT_PROMPT
         payload = {
             "iteration_number": iteration_number,
             "user_question": user_question,
             "latest_observation": latest_observation,
+            "recent_history": recent_history or [],
         }
         if latest_observation is None:
             payload["latest_observation"] = "No observations yet."
