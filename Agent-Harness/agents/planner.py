@@ -1,0 +1,77 @@
+import os
+from openai import OpenAI
+from agents.prompt import AGENT_PROMPT
+from dotenv import load_dotenv
+import json
+load_dotenv()
+from agents.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, SPECIALIST_MAX_TOKENS
+
+
+# class FakePlanner:
+#     def decide(self, iteration_number, latest_observation=None):
+#         if iteration_number == 1:
+#             return {
+#                 "tool_name": "list_files",
+#                 "tool_input": {"directory": "."},
+#             }
+
+#         if iteration_number == 2:
+#             return {
+#                 "tool_name": "run_command",
+#                 "tool_input": {"command": "python3 -m pytest"},
+#             }
+
+#         if iteration_number == 3:
+#             return {
+#                 "tool_name": "read_file",
+#                 "tool_input": {"file_path": "tests/test_auth.py"},
+#             }
+
+#         if iteration_number == 4:
+#             return {
+#                 "tool_name": "read_file",
+#                 "tool_input": {"file_path": "src/taskflow/auth.py"},
+#             }
+
+#         return {
+#             "tool_name": "finish",
+#             "tool_input": {
+#                 "final_answer": "Auth tests expect usernames to be normalized by trimming and lowercasing before lookup."
+#             },
+#         }
+
+class RealPlanner:
+    def __init__(self):
+        deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
+        if deepseek_api_key is None:
+            raise ValueError("DEEPSEEK_API_KEY is not set")
+
+        self.client = OpenAI(
+            api_key=deepseek_api_key,
+            base_url=DEEPSEEK_BASE_URL,
+        )
+
+    def decide(self,iteration_number,user_question:str,latest_observation=None):
+        prompt = AGENT_PROMPT
+        payload = {
+            "iteration_number": iteration_number,
+            "user_question": user_question,
+            "latest_observation": latest_observation,
+        }
+        if latest_observation is None:
+            payload["latest_observation"] = "No observations yet."
+
+        response = self.client.chat.completions.create(
+            model=DEEPSEEK_MODEL,
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": json.dumps(payload)},
+            ],
+            temperature=0.2,
+            max_tokens=SPECIALIST_MAX_TOKENS,
+            extra_body={
+                "thinking": {"type": "disabled"}
+            },
+        )
+        content = response.choices[0].message.content.strip()
+        return json.loads(content)

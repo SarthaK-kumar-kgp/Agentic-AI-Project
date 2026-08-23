@@ -2,7 +2,7 @@
 *.md
 !README.md
 *.pdf
-agents/
+/agents/
 __pycache__/
 *.pyc
 .DS_Store
