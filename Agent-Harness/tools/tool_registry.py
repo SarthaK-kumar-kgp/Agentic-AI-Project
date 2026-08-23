@@ -1,5 +1,30 @@
 from tools.tools import (list_files_in_directory, read_file,
                           write_file, run_command, search)
+
+
+TOOL_DESCRIPTION = {
+    "list_files": {
+        "description": "List files inside the target repo. Use '.' for the repo root.",
+        "input_format": {"directory": "."},
+    },
+    "read_file": {
+        "description": "Read a file inside the target repo.",
+        "input_format": {"file_path": "src/example.py"},
+    },
+    "write_file": {
+        "description": "Replace the full contents of an existing file inside the target repo.",
+        "input_format": {"file_path": "src/example.py", "content": "<new full file content>"},
+    },
+    "run_command": {
+        "description": "Run pytest inside the target repo. Only python3 -m pytest with optional repo-internal paths is allowed.",
+        "input_format": {"command": "python3 -m pytest"},
+    },
+    "search": {
+        "description": "Search for text inside files in the target repo.",
+        "input_format": {"pattern": "<text_to_search_for>"},
+    },
+}
+
 TOOLS = {
     "list_files": list_files_in_directory,
     "read_file": read_file,
