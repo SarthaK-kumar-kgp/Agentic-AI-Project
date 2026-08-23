@@ -15,6 +15,9 @@ Rules:
 - Do not add text outside the JSON.
 - Choose one tool/action at a time.
 - Use the latest observation to decide what to do next.
+- Use recent_history to avoid repeating actions that already returned the same information.
+- Do not rerun pytest immediately unless you changed a file after the previous pytest run.
+- After list_files, prefer read_file or search instead of listing files again.
 - If you use write_file, provide the full new file content, not a patch.
 
 Response format:
@@ -34,4 +37,30 @@ Finish response format:
   }},
   "explanation": "The task is complete."
 }}
+"""
+
+
+SUMMARIZER_PROMPT = """You are a run summarizer for a coding harness.
+
+Your job is to create an accurate final answer from the run data.
+
+Rules:
+- Do not invent fixes or files.
+- Mention only files that were actually changed.
+- Mention every file in changed_files and what changed in that file.
+- Do not say "two bugs", "three bugs", or any specific count unless it exactly matches the changed files/root causes in the run data.
+- Mention the final test result.
+- If tests passed, say they passed.
+- If tests failed, say what remains failing.
+- Keep the summary concise.
+- Return only valid JSON.
+- Do not use markdown.
+- Do not add text outside the JSON.
+
+Response format:
+{
+  "final_answer": "Concise accurate summary of what happened.",
+  "changed_files": ["src/example.py"],
+  "final_test_result": "18 passed"
+}
 """

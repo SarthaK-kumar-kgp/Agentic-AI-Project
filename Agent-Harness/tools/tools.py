@@ -7,16 +7,36 @@ import sys
 TARGET_REPO = Path(__file__).resolve().parents[1] / "fixtures" / "sample_python_repo"
 
 
-def list_files_in_directory(directory: str = "."):
+def get_target_root(workspace_path=None):
+    if workspace_path is None:
+        return TARGET_REPO.resolve()
+    return Path(workspace_path).resolve()
+
+
+def is_inside_root(path, root):
+    return path == root or root in path.parents
+
+
+def should_skip_path(path):
+    skipped_dirs = {".pytest_cache", "__pycache__", ".git"}
+    if path.suffix == ".pyc":
+        return True
+    for part in path.parts:
+        if part in skipped_dirs:
+            return True
+    return False
+
+
+def list_files_in_directory(directory: str = ".", workspace_path=None):
     """
     List all files in a directory and its subdirectories.
     Args:
         directory (str): A path inside the target repo.
     """
-    target_root = TARGET_REPO.resolve()
+    target_root = get_target_root(workspace_path)
     requested_path = (target_root / directory).resolve()
 
-    if not str(requested_path).startswith(str(target_root)):
+    if not is_inside_root(requested_path, target_root):
         return {
             "output": [],
             "error": "Path is outside the target repo.",
@@ -32,6 +52,8 @@ def list_files_in_directory(directory: str = "."):
 
     files = []
     for path in requested_path.rglob("*"):
+        if should_skip_path(path):
+            continue
         if path.is_file():
             files.append(str(path.relative_to(target_root)))
 
@@ -41,17 +63,17 @@ def list_files_in_directory(directory: str = "."):
         "success": True,
     }
 
-def read_file(file_path: str):
+def read_file(file_path: str, workspace_path=None):
     """
     Read the contents of a file.
 
     Args:
         file_path (str): A file path inside the target repo.
     """
-    target_root = TARGET_REPO.resolve()
+    target_root = get_target_root(workspace_path)
     requested_path = (target_root / file_path).resolve()
 
-    if not str(requested_path).startswith(str(target_root)):
+    if not is_inside_root(requested_path, target_root):
         return {
             "output": None,
             "error": "Path is outside the target repo.",
@@ -79,7 +101,7 @@ def read_file(file_path: str):
         "success": True,
     }
     
-def write_file(file_path:str,content:str):
+def write_file(file_path:str,content:str, workspace_path=None):
     """
     Write content to a file.
 
@@ -87,10 +109,10 @@ def write_file(file_path:str,content:str):
         file_path (str): The path to the file.
         content (str): The content to write to the file.
     """
-    target_root = TARGET_REPO.resolve()
+    target_root = get_target_root(workspace_path)
     requested_path = (target_root / file_path).resolve()
     
-    if not str(requested_path).startswith(str(target_root)):
+    if not is_inside_root(requested_path, target_root):
         return {
             "output": None,
             "error": "Path is outside the target repo.",
@@ -137,7 +159,7 @@ def write_file(file_path:str,content:str):
         "success": True,
     }
 
-def run_command(command:str):
+def run_command(command:str, workspace_path=None):
     """
     Run a shell command and return its output.
 
@@ -153,7 +175,7 @@ def run_command(command:str):
             "success": False,
         }
 
-    target_root = TARGET_REPO.resolve()
+    target_root = get_target_root(workspace_path)
     for path_arg in command_parts[3:]:
         if path_arg.startswith("-"):
             return {
@@ -174,7 +196,7 @@ def run_command(command:str):
         command_parts[0] = sys.executable
         output = subprocess.run(
             command_parts,
-            cwd=TARGET_REPO,
+            cwd=target_root,
             capture_output=True,
             text=True,
             timeout=20,
@@ -197,14 +219,14 @@ def run_command(command:str):
         "success": output.returncode == 0
     }
 
-def search(pattern: str):
+def search(pattern: str, workspace_path=None):
     """
     Search for a text pattern inside files in the target repo.
 
     Args:
         pattern (str): The text to search for.
     """
-    target_root = TARGET_REPO.resolve()
+    target_root = get_target_root(workspace_path)
 
     if not isinstance(pattern, str):
         return {
@@ -222,6 +244,8 @@ def search(pattern: str):
 
     matches = []
     for path in target_root.rglob("*"):
+        if should_skip_path(path):
+            continue
         if not path.is_file():
             continue
 

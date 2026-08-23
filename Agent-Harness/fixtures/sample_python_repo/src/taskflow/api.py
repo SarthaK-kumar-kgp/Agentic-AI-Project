@@ -9,7 +9,7 @@ def login(payload: dict) -> tuple[int, dict]:
     if authenticate(username, password):
         return 200, {"ok": True, "message": "logged in"}
 
-    return 401, {"ok": False, "error": "invalid credentials"}
+    return 500, {"ok": False, "error": "invalid credentials"}
 
 
 def register(payload: dict) -> tuple[int, dict]:

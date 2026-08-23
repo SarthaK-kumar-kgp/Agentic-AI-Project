@@ -3,8 +3,7 @@ def is_valid_email(email: str) -> bool:
         return False
 
     value = email.strip()
-    local_part, separator, domain = value.partition("@")
-    return bool(local_part and separator and domain)
+    return "@" in value
 
 
 def require_positive_int(value: int, field_name: str) -> None:

@@ -16,7 +16,7 @@ USERS = {
 
 def normalize_username(username: str) -> str:
     """Return the canonical username used for lookups."""
-    return username.strip().lower()
+    return username.strip()
 
 
 def authenticate(username: str, password: str) -> bool:
