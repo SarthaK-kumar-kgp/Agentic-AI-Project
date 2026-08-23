@@ -195,12 +195,52 @@ def run_command(command:str):
         "success": output.returncode == 0
     }
 
-def search(file_list:list, pattern:str):
+def search(pattern: str):
     """
-    Search for files in a directory and its subdirectories that match a given pattern.
+    Search for a text pattern inside files in the target repo.
 
     Args:
-        file_list (list): A list of file paths.
-        pattern (str): The pattern to match (e.g., '*.txt').
+        pattern (str): The text to search for.
     """
-    return [file for file in file_list if pattern in str(file)]
+    target_root = TARGET_REPO.resolve()
+
+    if not isinstance(pattern, str):
+        return {
+            "output": [],
+            "error": "pattern must be a string.",
+            "success": False,
+        }
+
+    if pattern == "":
+        return {
+            "output": [],
+            "error": "pattern cannot be empty.",
+            "success": False,
+        }
+
+    matches = []
+    for path in target_root.rglob("*"):
+        if not path.is_file():
+            continue
+
+        try:
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except UnicodeDecodeError:
+            continue
+
+        for line_number, line in enumerate(lines, start=1):
+            if pattern in line:
+                matches.append(
+                    {
+                        "file_name": str(path.relative_to(target_root)),
+                        "line_number": line_number,
+                        "line": line,
+                    }
+                )
+
+    return {
+        "output": matches,
+        "error": None,
+        "success": True,
+    }
+    
