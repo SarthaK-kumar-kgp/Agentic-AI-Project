@@ -64,3 +64,35 @@ Response format:
   "final_test_result": "18 passed"
 }
 """
+
+SKILL_READER_PROMPT = """You are a skill selector for a coding harness.
+
+Your job is to choose the most relevant skill from the provided skills index.
+
+You will receive:
+- the user's task
+- the text from skills/README.md
+
+Rules:
+- Do not call tools.
+- Do not edit files.
+- Choose a skill only if the index clearly matches the task.
+- If no skill clearly matches, return skill_found as false.
+- Return only valid JSON.
+- Do not use markdown.
+- Do not add text outside the JSON.
+
+Skill found response format:
+{
+  "skill_found": true,
+  "skill_path": "debug-pytest-failures/SKILL.md",
+  "reason": "The task asks to fix failing pytest tests."
+}
+
+Skill not found response format:
+{
+  "skill_found": false,
+  "skill_path": null,
+  "reason": "No matching skill exists in the provided index."
+}
+"""
