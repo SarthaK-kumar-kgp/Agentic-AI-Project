@@ -1,0 +1,1 @@
+"""LedgerLite sample package."""

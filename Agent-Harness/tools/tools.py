@@ -4,7 +4,10 @@ import shlex
 import subprocess
 import sys
 
-TARGET_REPO = Path(__file__).resolve().parents[1] / "fixtures" / "sample_python_repo"
+from agents.config import FIXTURE_REPO_NAME
+
+
+TARGET_REPO = Path(__file__).resolve().parents[1] / "fixtures" / FIXTURE_REPO_NAME
 
 
 def get_target_root(workspace_path=None):
