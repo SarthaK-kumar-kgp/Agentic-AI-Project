@@ -125,9 +125,12 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     )
     store.create_event(task_id, "AGENT_STARTED", {"agent_id": "real-planner"})
 
+    print("Skill check: reading skills index")
     skills_index_text = skill_selector.read_skills_index()
     skill_selection = skill_selector.select_skill(goal, skills_index_text)
     skill_description = skill_selector.get_skill_description(skill_selection["skill_path"])
+    print(f"Skill selected: {skill_selection}")
+    print(f"Skill loaded: {skill_description is not None}")
     store.create_event(task_id, "SKILL_SELECTED", {"skill_selection": skill_selection})
     store.create_event(
         task_id,

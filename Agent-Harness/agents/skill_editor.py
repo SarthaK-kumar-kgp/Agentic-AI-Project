@@ -63,12 +63,12 @@ class SkillEditor:
             return False
 
         current_text = self.skills_index.read_text()
-        if readme_entry in current_text:
-            return False
 
         if "No skills available yet." in current_text:
             updated_text = current_text.replace("No skills available yet.", readme_entry)
         else:
+            if readme_entry in current_text:
+                return False
             updated_text = current_text + "\n\n" + readme_entry + "\n"
 
         self.skills_index.write_text(updated_text)

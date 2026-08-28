@@ -117,13 +117,15 @@ Rules:
 - Return only valid JSON.
 - Do not use markdown outside JSON string values.
 - Do not add text outside the JSON.
-- Do not create a skill for one-off facts that are unlikely to repeat.
-- Create or update a skill only when the run shows a reusable process, debugging pattern, or tool-use strategy.
+- Do not create a skill from project-specific facts, filenames, function names, or exact bug fixes.
+- Do create a skill when the run shows a reusable process, debugging pattern, or tool-use strategy.
+- A run that fixes failing tests by running pytest, reading failure output, inspecting tests/source files, making targeted edits, and rerunning pytest is reusable and should become a skill if no matching skill exists.
 - If no skill was used and the run contains reusable knowledge, choose action as "create_new_skill".
 - If an existing skill was used and the run adds useful reusable knowledge to that skill, choose action as "update_existing_skill".
 - If an existing skill was used but the run also reveals a different reusable pattern, choose action as "create_new_skill".
 - If the existing skill already covers the run, choose action as "do_nothing".
 - Keep proposed_skill_markdown practical and step-by-step.
+- proposed_skill_markdown should describe the reusable workflow, not the exact files from this run.
 - Keep proposed_readme_entry short and suitable for skills/README.md.
 
 Response format:
