@@ -1,2 +1,28 @@
-This file contains information about the skills we have:
-It is structured by folder name and each folder contains a SKILL.md which provides exact skill.
+# Skills Index
+
+This folder contains reusable skills for the agent harness.
+
+## Available Skills
+
+No skills available yet.
+
+## Skill Entry Format
+
+Each skill should have:
+
+- Folder name
+- Skill path, ending in `SKILL.md`
+- Short description of when to use it
+
+Example:
+
+```md
+### debug-pytest-failures
+
+- Path: `debug-pytest-failures/SKILL.md`
+- Use when: The task asks the agent to debug failing pytest tests.
+```
+
+## Selection Rule
+
+If no listed skill clearly matches the user task, return `skill_found: false`.
