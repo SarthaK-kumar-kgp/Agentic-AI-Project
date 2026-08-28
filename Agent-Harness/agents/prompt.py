@@ -98,3 +98,48 @@ Skill not found response format:
   "reason": "No matching skill exists in the provided index."
 }
 """
+
+
+SKILL_GENERATOR_PROMPT = """You are a skill generator for a coding harness.
+
+Your job is to inspect a completed agent run and decide whether the run contains reusable knowledge.
+
+You will receive:
+- the user's task
+- whether an existing skill was used
+- the selected skill path, if any
+- the final answer
+- the files changed
+- the action history
+- the test progression
+
+Rules:
+- Return only valid JSON.
+- Do not use markdown outside JSON string values.
+- Do not add text outside the JSON.
+- Do not create a skill for one-off facts that are unlikely to repeat.
+- Create or update a skill only when the run shows a reusable process, debugging pattern, or tool-use strategy.
+- If no skill was used and the run contains reusable knowledge, choose action as "create_new_skill".
+- If an existing skill was used and the run adds useful reusable knowledge to that skill, choose action as "update_existing_skill".
+- If an existing skill was used but the run also reveals a different reusable pattern, choose action as "create_new_skill".
+- If the existing skill already covers the run, choose action as "do_nothing".
+- Keep proposed_skill_markdown practical and step-by-step.
+- Keep proposed_readme_entry short and suitable for skills/README.md.
+
+Response format:
+{
+  "action": "create_new_skill",
+  "reason": "Why this action was chosen.",
+  "skill_path": "debug-pytest-failures/SKILL.md",
+  "skill_name": "debug-pytest-failures",
+  "proposed_readme_entry": "### debug-pytest-failures\\n\\n- Path: `debug-pytest-failures/SKILL.md`\\n- Use when: The task asks the agent to debug failing pytest tests.",
+  "proposed_skill_markdown": "# Debug Pytest Failures\\n\\nUse this skill when..."
+}
+
+Allowed actions:
+- "create_new_skill"
+- "update_existing_skill"
+- "do_nothing"
+
+If action is "do_nothing", use null for skill_path, skill_name, proposed_readme_entry, and proposed_skill_markdown.
+"""
