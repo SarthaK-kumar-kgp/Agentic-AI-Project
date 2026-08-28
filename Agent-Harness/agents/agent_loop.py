@@ -6,7 +6,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 from agents.config import MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT
 
-from agents.planner import RealPlanner, Summarizer
+from agents.planner import RealPlanner, Summarizer,SkillSelector
 from storage.sql_store import SQLStore
 from tools.tool_registry import run_tools
 
@@ -95,6 +95,7 @@ def build_summary_payload(goal, history, file_changes, planner_final_answer):
 def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_ITERATION_NUMBER):
     planner = RealPlanner()
     summarizer = Summarizer()
+    skill_selector = SkillSelector()
     store = SQLStore()
     task_id = store.create_task(goal, status="RUNNING")
     workspace_path = create_workspace(task_id)
@@ -107,6 +108,11 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
         {"goal": goal, "workspace_path": str(workspace_path)},
     )
     store.create_event(task_id, "AGENT_STARTED", {"agent_id": "real-planner"})
+
+    ##selecting the skills for the task
+    skills = skill_selector.select_skills(goal)
+    store.create_event(task_id, "SKILLS_SELECTED", {"skills": skills})
+
 
     for iteration_number in range(1, max_iterations + 1):
         recent_history = history[-RECENT_HISTORY_LIMIT:]
