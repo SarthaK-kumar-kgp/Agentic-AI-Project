@@ -6,7 +6,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 from agents.config import MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT
 
-from agents.planner import RealPlanner, Summarizer,SkillSelector
+from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector
+from agents.skill_editor import SkillEditor
 from storage.sql_store import SQLStore
 from tools.tool_registry import run_tools
 
@@ -92,10 +93,25 @@ def build_summary_payload(goal, history, file_changes, planner_final_answer):
     }
 
 
+def build_skill_payload(goal, summary_payload, final_answer, skill_selection, skill_description):
+    return {
+        "user_task": goal,
+        "skill_used": skill_description is not None,
+        "selected_skill_path": skill_selection["skill_path"],
+        "selected_skill_markdown": skill_description,
+        "final_answer": final_answer,
+        "changed_files": summary_payload["file_changes"],
+        "test_runs": summary_payload["test_runs"],
+        "actions": summary_payload["actions"],
+    }
+
+
 def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_ITERATION_NUMBER):
     planner = RealPlanner()
     summarizer = Summarizer()
+    skill_generator = SkillGenerator()
     skill_selector = SkillSelector()
+    skill_editor = SkillEditor()
     store = SQLStore()
     task_id = store.create_task(goal, status="RUNNING")
     workspace_path = create_workspace(task_id)
@@ -159,6 +175,21 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
                 "SUMMARY_CREATED",
                 {"summary": summary, "summary_payload": summary_payload},
             )
+            skill_payload = build_skill_payload(
+                goal,
+                summary_payload,
+                final_answer,
+                skill_selection,
+                skill_description,
+            )
+            skill_decision = skill_generator.generate(skill_payload)
+            store.create_event(
+                task_id,
+                "SKILL_GENERATED",
+                {"skill_decision": skill_decision, "skill_payload": skill_payload},
+            )
+            skill_editor_result = skill_editor.apply_decision(skill_decision)
+            store.create_event(task_id, "SKILL_EDITED", {"skill_editor_result": skill_editor_result})
             store.create_event(task_id, "TASK_COMPLETED", {"final_answer": final_answer})
             store.update_task_status(task_id, "COMPLETED", final_answer)
             print(f"Final answer: {final_answer}")
