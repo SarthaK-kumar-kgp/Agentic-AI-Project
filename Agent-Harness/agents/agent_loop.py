@@ -112,8 +112,10 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     ##selecting the skills for the task
     skills = skill_selector.select_skills(goal)
     store.create_event(task_id, "SKILLS_SELECTED", {"skills": skills})
-
-
+    skill_descriptions = skill_selector.get_skill_descriptions(skills)
+    store.create_event(task_id, "SKILL_DESCRIPTIONS", {"skill_descriptions": skill_descriptions})
+    history.append({"iteration": 0, "tool_name": "select_skills", "tool_input": {"goal": goal}, "observation": {"skills": skills, "skill_descriptions": skill_descriptions}})
+    
     for iteration_number in range(1, max_iterations + 1):
         recent_history = history[-RECENT_HISTORY_LIMIT:]
         action = planner.decide(iteration_number,goal, latest_observation,recent_history)

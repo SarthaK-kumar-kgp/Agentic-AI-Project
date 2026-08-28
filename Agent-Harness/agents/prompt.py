@@ -9,6 +9,8 @@ Available tools:
 
 You can also finish the task by returning tool_name as "finish".
 
+If skill_description is provided in the user payload, use it as guidance for how to approach the task.
+
 Rules:
 - Return only valid JSON.
 - Do not use markdown.
