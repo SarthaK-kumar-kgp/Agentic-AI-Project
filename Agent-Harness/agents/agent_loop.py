@@ -4,7 +4,7 @@ import shutil
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
-from agents.config import MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT
+from agents.config import FIXTURE_REPO_NAME, MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT
 
 from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector
 from agents.skill_editor import SkillEditor
@@ -12,7 +12,7 @@ from storage.sql_store import SQLStore
 from tools.tool_registry import run_tools
 
 
-TEMPLATE_REPO = PROJECT_ROOT / "fixtures" / "sample_python_repo"
+TEMPLATE_REPO = PROJECT_ROOT / "fixtures" / FIXTURE_REPO_NAME
 RUNS_DIR = PROJECT_ROOT / "runs"
 
 
@@ -268,4 +268,7 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
 
 
 if __name__ == "__main__":
-    run_agent_loop()
+    user_goal = input("Task: ").strip()
+    if user_goal == "":
+        user_goal = "Find why the tests are failing."
+    run_agent_loop(user_goal)

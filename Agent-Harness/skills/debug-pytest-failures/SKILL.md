@@ -1,58 +1,50 @@
 # Debug Pytest Failures
 
-Use this skill when you need to find and fix failing pytest tests.
-
-## When to Use
-- The task asks you to debug failing tests.
-- You see pytest failures and need to identify root causes.
+Use this skill when the task involves fixing failing pytest tests in a Python project.
 
 ## Workflow
 
-1. **Run the test suite**
-   - Execute `python3 -m pytest` to see the current state.
-   - Note the number of failures and the failing test names.
+1. **Run the test suite** to see the current state:
+   ```bash
+   python3 -m pytest
+   ```
+   Note the number of passed/failed tests and any error messages.
 
-2. **Inspect the project structure**
-   - List files to understand the layout (e.g., `src/`, `tests/`).
-   - Identify the source modules and test files involved.
+2. **Inspect the project structure** to locate the source files:
+   - Use `list_files` to see the repository layout.
+   - Identify the package/module directories (e.g., `src/`).
 
-3. **Read the relevant source and test files**
-   - Open the source files that are likely related to the failures.
-   - Open the corresponding test files to understand expected behavior.
-   - Look for mismatches between implementation and test expectations.
+3. **Read the relevant source files** that are likely causing failures:
+   - Look for files mentioned in the test output or that implement the tested functionality.
+   - Read the test files if available to understand expected behavior.
 
-4. **Make targeted fixes**
-   - Fix one issue at a time, focusing on the root cause.
-   - Common issues include:
-     - Incorrect logic (e.g., wrong formula, off-by-one errors).
-     - Missing validation or edge-case handling.
-     - Wrong HTTP status codes or return values.
-     - Case sensitivity or normalization problems.
+4. **Make targeted fixes**:
+   - Address each failing test by modifying the source code.
+   - Keep changes minimal and focused on the reported issues.
+   - Common fixes include:
+     - Normalizing input data (e.g., stripping whitespace, converting formats).
+     - Avoiding mutation of input collections (use `sorted()` instead of `.sort()`).
+     - Handling edge cases like rounding or missing keys.
 
-5. **Rerun the tests**
-   - After each fix, run `python3 -m pytest` again.
-   - Confirm that the number of failures decreases.
-   - If new failures appear, inspect the new failure output and adjust.
+5. **Rerun the test suite** after each set of changes:
+   ```bash
+   python3 -m pytest
+   ```
+   - If failures remain, read the updated failure output and repeat steps 3-4.
 
-6. **Repeat until all tests pass**
-   - Continue the cycle: run, inspect, fix, rerun.
-   - Ensure the final run shows all tests passing.
+6. **Confirm all tests pass** before finishing.
 
 ## Tips
-- Read the full failure output; it often points directly to the failing assertion.
-- Compare the implementation against the test expectations line by line.
-- Make small, incremental changes to avoid introducing new bugs.
-- Use `pytest -k <test_name>` to run a specific failing test for faster iteration.
 
-## Example Scenario
-- Tests fail because a discount is subtracted as a flat amount instead of a percentage.
-- Fix: `subtotal - (subtotal * discount_percent // 100)`.
-- Tests fail because email validation only checks for '@'.
-- Fix: ensure both local and domain parts are non-empty.
-- Tests fail because invalid credentials return 500 instead of 401.
-- Fix: return 401.
-- Tests fail because usernames are case-sensitive.
-- Fix: normalize usernames to lowercase.
+- Use `read_file` to inspect both source and test files before editing.
+- Prefer non-mutating operations to avoid side effects.
+- Normalize inputs consistently (e.g., lowercase, strip, convert date formats).
+- Round monetary calculations to the nearest cent when needed.
 
-## Conclusion
-By following this iterative workflow, you can systematically identify and fix the root causes of pytest failures until the entire suite passes.
+## Example
+
+For a finance library with failing tests, the workflow would be:
+1. Run `pytest` to see failures.
+2. Read `importer.py`, `reports.py`, and `tax.py`.
+3. Fix parsing, date normalization, sorting, and tax rounding.
+4. Rerun `pytest` until all tests pass.
