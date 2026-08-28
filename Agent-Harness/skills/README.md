@@ -4,7 +4,10 @@ This folder contains reusable skills for the agent harness.
 
 ## Available Skills
 
-No skills available yet.
+### debug-pytest-failures
+
+- Path: `debug-pytest-failures/SKILL.md`
+- Use when: The task asks the agent to debug failing pytest tests.
 
 ## Skill Entry Format
 
