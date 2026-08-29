@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from openai import OpenAI
-from agents.prompt import AGENT_PROMPT, SUMMARIZER_PROMPT, SKILL_READER_PROMPT, SKILL_GENERATOR_PROMPT
+from agents.prompt import AGENT_PROMPT, SUMMARIZER_PROMPT, SKILL_READER_PROMPT, SKILL_GENERATOR_PROMPT, MEMORY_UPDATER_PROMPT
 from dotenv import load_dotenv
 import json
 load_dotenv()
@@ -128,6 +128,34 @@ class SkillGenerator:
             model=DEEPSEEK_MODEL,
             messages=[
                 {"role": "system", "content": SKILL_GENERATOR_PROMPT},
+                {"role": "user", "content": json.dumps(payload)},
+            ],
+            temperature=0.1,
+            max_tokens=SPECIALIST_MAX_TOKENS,
+            extra_body={
+                "thinking": {"type": "disabled"}
+            },
+        )
+        content = response.choices[0].message.content.strip()
+        return json.loads(content)
+
+
+class MemoryUpdater:
+    def __init__(self):
+        deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
+        if deepseek_api_key is None:
+            raise ValueError("DEEPSEEK_API_KEY is not set")
+
+        self.client = OpenAI(
+            api_key=deepseek_api_key,
+            base_url=DEEPSEEK_BASE_URL,
+        )
+
+    def update(self, payload):
+        response = self.client.chat.completions.create(
+            model=DEEPSEEK_MODEL,
+            messages=[
+                {"role": "system", "content": MEMORY_UPDATER_PROMPT},
                 {"role": "user", "content": json.dumps(payload)},
             ],
             temperature=0.1,

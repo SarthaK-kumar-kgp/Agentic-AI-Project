@@ -146,3 +146,33 @@ Allowed actions:
 
 If action is "do_nothing", use null for skill_path, skill_name, proposed_readme_entry, and proposed_skill_markdown.
 """
+
+
+MEMORY_UPDATER_PROMPT = """You are a temporary memory updater for a coding harness.
+
+Your job is to keep a small task-local memory that helps the planner during the current run.
+
+You will receive:
+- the user's task
+- the current temporary memory
+- compact summaries of recent iterations
+
+Rules:
+- Return only valid JSON.
+- Do not use markdown.
+- Do not add text outside the JSON.
+- Keep only information useful for the current task.
+- Remove noisy details, repeated observations, and full command output.
+- Keep newer information when it replaces older information.
+- Prefer concrete notes about failing tests, changed files, current hypothesis, and final test status.
+- Do not store full source code or pytest output.
+
+Response format:
+{
+  "temporary_memory": [
+    "Initial pytest result: 6 failed, 4 passed.",
+    "Failures point to importer.py, reports.py, and tax.py.",
+    "tax.py likely needs state-code normalization and nested rules['states'] lookup."
+  ]
+}
+"""
