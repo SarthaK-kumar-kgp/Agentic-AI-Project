@@ -4,8 +4,9 @@ import shutil
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
-from agents.config import FIXTURE_REPO_NAME, MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT
+from agents.config import FIXTURE_REPO_NAME, MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT, RETRIEVED_MEMORY_LIMIT
 
+from agents.memory_retriever import MemoryRetriever
 from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector
 from agents.skill_editor import SkillEditor
 from storage.sql_store import SQLStore
@@ -112,6 +113,7 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     skill_generator = SkillGenerator()
     skill_selector = SkillSelector()
     skill_editor = SkillEditor()
+    memory_retriever = MemoryRetriever()
     store = SQLStore()
     task_id = store.create_task(goal, status="RUNNING")
     workspace_path = create_workspace(task_id)
@@ -124,6 +126,10 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
         {"goal": goal, "workspace_path": str(workspace_path)},
     )
     store.create_event(task_id, "AGENT_STARTED", {"agent_id": "real-planner"})
+
+    retrieved_memory = memory_retriever.retrieve(goal, RETRIEVED_MEMORY_LIMIT)
+    print(f"Memory retrieved: {len(retrieved_memory)}")
+    store.create_event(task_id, "MEMORY_RETRIEVED", {"retrieved_memory": retrieved_memory})
 
     print("Skill check: reading skills index")
     skills_index_text = skill_selector.read_skills_index()
@@ -140,7 +146,14 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     
     for iteration_number in range(1, max_iterations + 1):
         recent_history = history[-RECENT_HISTORY_LIMIT:]
-        action = planner.decide(iteration_number, goal, latest_observation, recent_history, skill_description)
+        action = planner.decide(
+            iteration_number,
+            goal,
+            latest_observation,
+            recent_history,
+            skill_description,
+            retrieved_memory,
+        )
         tool_name = action["tool_name"]
         tool_input = action["tool_input"]
         explanation = action.get("explanation", "")

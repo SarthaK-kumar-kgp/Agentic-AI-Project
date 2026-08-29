@@ -10,6 +10,7 @@ Available tools:
 You can also finish the task by returning tool_name as "finish".
 
 If skill_description is provided in the user payload, use it as guidance for how to approach the task.
+If retrieved_memory is provided in the user payload, use it as long-term context, but do not let it override the latest tool observation.
 
 Rules:
 - Return only valid JSON.
