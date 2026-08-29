@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from openai import OpenAI
+from json import JSONDecodeError
 from agents.prompt import (
     AGENT_PROMPT,
     SUMMARIZER_PROMPT,
@@ -16,6 +17,23 @@ from agents.config import DEEPSEEK_BASE_URL, DEEPSEEK_MODEL, SPECIALIST_MAX_TOKE
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = PROJECT_ROOT / "skills"
+
+
+def parse_llm_json(content):
+    content = content.strip()
+
+    if content.startswith("```"):
+        lines = content.splitlines()
+        content = "\n".join(lines[1:])
+        if content.endswith("```"):
+            content = content[:-3].strip()
+
+    json_start = content.find("{")
+    if json_start > 0:
+        content = content[json_start:]
+
+    parsed_json, end_position = json.JSONDecoder().raw_decode(content)
+    return parsed_json
 
 
 # class FakePlanner:
@@ -98,7 +116,16 @@ class RealPlanner:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        try:
+            return parse_llm_json(content)
+        except JSONDecodeError:
+            return {
+                "tool_name": "run_command",
+                "tool_input": {
+                    "command": "python3 -m pytest"
+                },
+                "explanation": "Planner returned malformed JSON, so rerunning tests to recover with a fresh observation.",
+            }
 
 
 class Summarizer:
@@ -126,7 +153,7 @@ class Summarizer:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        return parse_llm_json(content)
 
 
 class SkillGenerator:
@@ -154,7 +181,7 @@ class SkillGenerator:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        return parse_llm_json(content)
 
 
 class MemoryUpdater:
@@ -182,7 +209,12 @@ class MemoryUpdater:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        try:
+            return parse_llm_json(content)
+        except JSONDecodeError:
+            return {
+                "temporary_memory": payload["current_temporary_memory"]
+            }
 
 
 class MemoryGenerator:
@@ -210,7 +242,7 @@ class MemoryGenerator:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        return parse_llm_json(content)
 
 
 class SkillSelector:
@@ -244,7 +276,7 @@ class SkillSelector:
             },
         )
         content = response.choices[0].message.content.strip()
-        return json.loads(content)
+        return parse_llm_json(content)
 
     def get_skill_description(self, skill_path: str):
         if skill_path is None:

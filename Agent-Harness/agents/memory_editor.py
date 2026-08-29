@@ -48,7 +48,7 @@ class MemoryEditor:
             memory_type = operation["memory_type"]
 
             if action == "add":
-                new_item = self.create_memory_item(operation, memory_type, current_timestamp)
+                new_item = self.create_memory_item(memory, operation, memory_type, current_timestamp)
                 memory[memory_type].append(new_item)
                 applied.append({"action": "add", "memory_type": memory_type, "id": new_item["id"]})
 
@@ -101,9 +101,9 @@ class MemoryEditor:
 
         return True
 
-    def create_memory_item(self, operation, memory_type, current_timestamp):
+    def create_memory_item(self, memory, operation, memory_type, current_timestamp):
         return {
-            "id": self.next_id(memory_type),
+            "id": self.next_id(memory, memory_type),
             "text": operation["text"],
             "tags": operation["tags"],
             "created_at": current_timestamp,
@@ -122,8 +122,7 @@ class MemoryEditor:
 
         return False
 
-    def next_id(self, memory_type):
-        memory = json.loads(self.memory_file.read_text())
+    def next_id(self, memory, memory_type):
         prefix = memory_type[:-1]
         highest_number = 0
 
