@@ -1,6 +1,8 @@
+import json
 import sys
 from pathlib import Path
 import shutil
+from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -14,7 +16,8 @@ from agents.config import (
 )
 
 from agents.memory_retriever import MemoryRetriever
-from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector, MemoryUpdater
+from agents.memory_editor import MemoryEditor
+from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector, MemoryUpdater, MemoryGenerator
 from agents.skill_editor import SkillEditor
 from storage.sql_store import SQLStore
 from tools.tool_registry import run_tools
@@ -178,6 +181,28 @@ def build_memory_update_payload(goal, temporary_memory, history):
     }
 
 
+def build_permanent_memory_payload(
+    goal,
+    final_answer,
+    temporary_memory,
+    retrieved_memory,
+    summary_payload,
+    current_timestamp,
+    memory_file,
+):
+    permanent_memory = json.loads(memory_file.read_text())
+    return {
+        "current_timestamp": current_timestamp,
+        "user_task": goal,
+        "final_answer": final_answer,
+        "temporary_memory": temporary_memory,
+        "retrieved_memory": retrieved_memory,
+        "permanent_memory": permanent_memory,
+        "changed_files": summary_payload["file_changes"],
+        "test_runs": summary_payload["test_runs"],
+    }
+
+
 def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_ITERATION_NUMBER):
     planner = RealPlanner()
     summarizer = Summarizer()
@@ -186,6 +211,8 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     skill_editor = SkillEditor()
     memory_retriever = MemoryRetriever()
     memory_updater = MemoryUpdater()
+    memory_generator = MemoryGenerator()
+    memory_editor = MemoryEditor()
     store = SQLStore()
     task_id = store.create_task(goal, status="RUNNING")
     workspace_path = create_workspace(task_id)
@@ -280,6 +307,28 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
             )
             skill_editor_result = skill_editor.apply_decision(skill_decision)
             store.create_event(task_id, "SKILL_EDITED", {"skill_editor_result": skill_editor_result})
+            current_timestamp = datetime.now().isoformat(timespec="seconds")
+            permanent_memory_payload = build_permanent_memory_payload(
+                goal,
+                final_answer,
+                temporary_memory,
+                retrieved_memory,
+                summary_payload,
+                current_timestamp,
+                memory_editor.memory_file,
+            )
+            memory_decision = memory_generator.generate(permanent_memory_payload)
+            store.create_event(
+                task_id,
+                "MEMORY_GENERATED",
+                {"memory_decision": memory_decision, "memory_payload": permanent_memory_payload},
+            )
+            memory_editor_result = memory_editor.apply_decision(memory_decision, current_timestamp)
+            store.create_event(
+                task_id,
+                "PERMANENT_MEMORY_UPDATED",
+                {"memory_editor_result": memory_editor_result},
+            )
             store.create_event(task_id, "TASK_COMPLETED", {"final_answer": final_answer})
             store.update_task_status(task_id, "COMPLETED", final_answer)
             print(f"Final answer: {final_answer}")
