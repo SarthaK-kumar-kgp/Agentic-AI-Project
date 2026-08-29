@@ -4,10 +4,17 @@ import shutil
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
-from agents.config import FIXTURE_REPO_NAME, MAX_ITERATION_NUMBER, RECENT_HISTORY_LIMIT, RETRIEVED_MEMORY_LIMIT
+from agents.config import (
+    FIXTURE_REPO_NAME,
+    MAX_ITERATION_NUMBER,
+    MEMORY_UPDATE_INTERVAL,
+    RECENT_HISTORY_LIMIT,
+    RETRIEVED_MEMORY_LIMIT,
+    TEMPORARY_MEMORY_LIMIT,
+)
 
 from agents.memory_retriever import MemoryRetriever
-from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector
+from agents.planner import RealPlanner, Summarizer, SkillGenerator, SkillSelector, MemoryUpdater
 from agents.skill_editor import SkillEditor
 from storage.sql_store import SQLStore
 from tools.tool_registry import run_tools
@@ -107,6 +114,70 @@ def build_skill_payload(goal, summary_payload, final_answer, skill_selection, sk
     }
 
 
+def compact_observation(tool_name, tool_input, observation):
+    output = observation.get("output")
+
+    if tool_name == "list_files" and isinstance(output, list):
+        return {
+            "success": observation.get("success"),
+            "directory": tool_input.get("directory"),
+            "file_count": len(output),
+            "sample_files": output[:10],
+        }
+
+    if tool_name == "read_file" and isinstance(output, str):
+        return {
+            "success": observation.get("success"),
+            "file_path": tool_input.get("file_path"),
+            "line_count": len(output.splitlines()),
+        }
+
+    if tool_name == "run_command":
+        return {
+            "success": observation.get("success"),
+            "test_summary": extract_test_summary(observation),
+        }
+
+    if tool_name == "write_file" and isinstance(output, dict):
+        return {
+            "success": observation.get("success"),
+            "file_name": output.get("file_name"),
+            "file_difference": output.get("file_difference", "")[:1200],
+        }
+
+    if tool_name == "search" and isinstance(output, list):
+        return {
+            "success": observation.get("success"),
+            "pattern": tool_input.get("pattern"),
+            "match_count": len(output),
+            "sample_matches": output[:5],
+        }
+
+    return {
+        "success": observation.get("success"),
+        "error": observation.get("error"),
+    }
+
+
+def build_memory_update_payload(goal, temporary_memory, history):
+    recent_iterations = []
+    for item in history[-MEMORY_UPDATE_INTERVAL:]:
+        recent_iterations.append(
+            {
+                "iteration": item["iteration"],
+                "tool_name": item["tool_name"],
+                "tool_input": item["tool_input"],
+                "observation": compact_observation(item["tool_name"], item["tool_input"], item["observation"]),
+            }
+        )
+
+    return {
+        "user_task": goal,
+        "current_temporary_memory": temporary_memory,
+        "recent_iterations": recent_iterations,
+    }
+
+
 def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_ITERATION_NUMBER):
     planner = RealPlanner()
     summarizer = Summarizer()
@@ -114,11 +185,13 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     skill_selector = SkillSelector()
     skill_editor = SkillEditor()
     memory_retriever = MemoryRetriever()
+    memory_updater = MemoryUpdater()
     store = SQLStore()
     task_id = store.create_task(goal, status="RUNNING")
     workspace_path = create_workspace(task_id)
     latest_observation = None
     history = []
+    temporary_memory = []
 
     store.create_event(
         task_id,
@@ -153,6 +226,7 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
             recent_history,
             skill_description,
             retrieved_memory,
+            temporary_memory,
         )
         tool_name = action["tool_name"]
         tool_input = action["tool_input"]
@@ -268,6 +342,20 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
                 "observation": latest_observation,
             }
         )
+        if iteration_number % MEMORY_UPDATE_INTERVAL == 0:
+            memory_payload = build_memory_update_payload(goal, temporary_memory, history)
+            memory_update = memory_updater.update(memory_payload)
+            temporary_memory = memory_update["temporary_memory"][:TEMPORARY_MEMORY_LIMIT]
+            print(f"Temporary memory updated: {len(temporary_memory)} items")
+            store.create_event(
+                task_id,
+                "TEMPORARY_MEMORY_UPDATED",
+                {
+                    "iteration_number": iteration_number,
+                    "temporary_memory": temporary_memory,
+                    "memory_payload": memory_payload,
+                },
+            )
         # print(latest_observation)
 
     final_answer = "Agent loop reached max_iterations."

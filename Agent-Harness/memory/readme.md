@@ -44,12 +44,29 @@ Current structure:
 
 ```json
 {
+  "_schema": {
+    "memory_item": {
+      "id": "fact-001",
+      "text": "The memory content.",
+      "tags": ["python", "pytest"],
+      "created_at": "2026-08-29T10:30:00",
+      "updated_at": "2026-08-29T10:30:00"
+    }
+  },
   "facts": [],
   "lessons": [],
   "preferences": [],
   "metrics": []
 }
 ```
+
+Each memory item should have:
+
+- `id`: stable unique memory id
+- `text`: the actual memory
+- `tags`: keywords used for retrieval
+- `created_at`: when the memory was first created
+- `updated_at`: when the memory was last changed
 
 ## Update Rule
 

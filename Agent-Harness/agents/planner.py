@@ -1,7 +1,14 @@
 import os
 from pathlib import Path
 from openai import OpenAI
-from agents.prompt import AGENT_PROMPT, SUMMARIZER_PROMPT, SKILL_READER_PROMPT, SKILL_GENERATOR_PROMPT, MEMORY_UPDATER_PROMPT
+from agents.prompt import (
+    AGENT_PROMPT,
+    SUMMARIZER_PROMPT,
+    SKILL_READER_PROMPT,
+    SKILL_GENERATOR_PROMPT,
+    MEMORY_UPDATER_PROMPT,
+    MEMORY_GENERATOR_PROMPT,
+)
 from dotenv import load_dotenv
 import json
 load_dotenv()
@@ -55,7 +62,16 @@ class RealPlanner:
             base_url=DEEPSEEK_BASE_URL,
         )
 
-    def decide(self,iteration_number,user_question:str,latest_observation=None,recent_history=None,skill_description=None,retrieved_memory=None):
+    def decide(
+        self,
+        iteration_number,
+        user_question: str,
+        latest_observation=None,
+        recent_history=None,
+        skill_description=None,
+        retrieved_memory=None,
+        temporary_memory=None,
+    ):
         prompt = AGENT_PROMPT
         payload = {
             "iteration_number": iteration_number,
@@ -64,6 +80,7 @@ class RealPlanner:
             "recent_history": recent_history or [],
             "skill_description": skill_description,
             "retrieved_memory": retrieved_memory or [],
+            "temporary_memory": temporary_memory or [],
         }
         if latest_observation is None:
             payload["latest_observation"] = "No observations yet."
@@ -156,6 +173,34 @@ class MemoryUpdater:
             model=DEEPSEEK_MODEL,
             messages=[
                 {"role": "system", "content": MEMORY_UPDATER_PROMPT},
+                {"role": "user", "content": json.dumps(payload)},
+            ],
+            temperature=0.1,
+            max_tokens=SPECIALIST_MAX_TOKENS,
+            extra_body={
+                "thinking": {"type": "disabled"}
+            },
+        )
+        content = response.choices[0].message.content.strip()
+        return json.loads(content)
+
+
+class MemoryGenerator:
+    def __init__(self):
+        deepseek_api_key = os.getenv("DEEPSEEK_API_KEY")
+        if deepseek_api_key is None:
+            raise ValueError("DEEPSEEK_API_KEY is not set")
+
+        self.client = OpenAI(
+            api_key=deepseek_api_key,
+            base_url=DEEPSEEK_BASE_URL,
+        )
+
+    def generate(self, payload):
+        response = self.client.chat.completions.create(
+            model=DEEPSEEK_MODEL,
+            messages=[
+                {"role": "system", "content": MEMORY_GENERATOR_PROMPT},
                 {"role": "user", "content": json.dumps(payload)},
             ],
             temperature=0.1,
