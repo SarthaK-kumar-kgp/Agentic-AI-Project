@@ -73,7 +73,7 @@ memory/
 From the project folder:
 
 ```bash
-cd /Users/sarthakkumar/Documents/Internship/Agents/Agent-Harness
+cd ./Agents/Agent-Harness
 ```
 
 Install the basic packages:
@@ -209,11 +209,11 @@ It is not production-grade yet. The main things still worth improving are:
 - stronger loop-breaking when the agent repeats bad edits
 - better duplicate detection for memory and skills
 - more tests for the harness itself
-- cleaner command-line options
+- cleaner command-line options move from just pytest best fixtures to generate file fixtures
 - better tools for browsing SQLite logs
 
 ## Notes
 
-The fixture repos are intentionally small. That is useful because it lets you clearly see how the harness behaves: what the agent reads, what it changes, when it gets stuck, and what it learns from the run.
+The fixture repos are intentionally small. That is useful because it lets me clearly see how the harness behaves: what the agent reads, what it changes, when it gets stuck, and what it learns from the run.
 
-That is the point of this project: not just whether the agent fixes code, but whether the harness helps you understand and improve the way the agent works.
+That main point is not just for the agent to fix the code, but whether the harness helps me understand and improve the way the agent works.
