@@ -22,6 +22,8 @@ Rules:
 - Use recent_history to avoid repeating actions that already returned the same information.
 - Do not rerun pytest immediately unless you changed a file after the previous pytest run.
 - After list_files, prefer read_file or search instead of listing files again.
+- If the same file edit did not improve the test result, do not repeat the same edit; inspect more context or try a different fix.
+- If recent_history shows repeated write_file calls to the same file, compare the last failure with the last diff before editing again.
 - If you use write_file, provide the full new file content, not a patch.
 
 Response format:
@@ -56,6 +58,7 @@ Rules:
 - Mention the final test result.
 - If tests passed, say they passed.
 - If tests failed, say what remains failing.
+- If max_iterations was reached, clearly say the result is partial/incomplete.
 - Keep the summary concise.
 - Return only valid JSON.
 - Do not use markdown.

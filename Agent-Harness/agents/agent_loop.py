@@ -25,6 +25,7 @@ from tools.tool_registry import run_tools
 
 TEMPLATE_REPO = PROJECT_ROOT / "fixtures" / FIXTURE_REPO_NAME
 RUNS_DIR = PROJECT_ROOT / "runs"
+REPEATED_EDIT_LIMIT = 3
 
 
 def create_workspace(task_id):
@@ -71,6 +72,21 @@ def build_action_summary(history):
     return actions, test_runs
 
 
+def get_latest_failed_test_output(history):
+    for item in reversed(history):
+        if item["tool_name"] != "run_command":
+            continue
+        if item["observation"].get("success"):
+            continue
+
+        output = item["observation"].get("output") or {}
+        stdout = output.get("stdout", "")
+        stderr = output.get("stderr", "")
+        return (stdout + "\n" + stderr).strip()[-2500:]
+
+    return ""
+
+
 def get_file_changes_for_summary(store, task_id):
     rows = store.read_query(
         """
@@ -100,6 +116,7 @@ def build_summary_payload(goal, history, file_changes, planner_final_answer):
         "actions": actions,
         "file_changes": file_changes,
         "test_runs": test_runs,
+        "latest_failed_test_output": get_latest_failed_test_output(history),
         "planner_final_answer": planner_final_answer,
     }
 
@@ -203,6 +220,20 @@ def build_permanent_memory_payload(
     }
 
 
+def build_repeated_edit_observation(file_name, test_summary, edit_count):
+    return {
+        "output": {
+            "message": "REPEATED_EDIT_DETECTED",
+            "file_name": file_name,
+            "edit_count": edit_count,
+            "test_summary": test_summary,
+            "instruction": "This file has been edited repeatedly without improving the latest failing test result. Do not repeat the same edit. Inspect more context or try a different implementation.",
+        },
+        "error": "REPEATED_EDIT_DETECTED",
+        "success": False,
+    }
+
+
 def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_ITERATION_NUMBER):
     planner = RealPlanner()
     summarizer = Summarizer()
@@ -219,6 +250,8 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
     latest_observation = None
     history = []
     temporary_memory = []
+    last_failing_test_summary = None
+    repeated_file_edits = {}
 
     store.create_event(
         task_id,
@@ -378,6 +411,35 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
                 file_change["file_difference"],
             )
 
+        repeated_edit_observation = None
+        if tool_name == "run_command":
+            test_summary = extract_test_summary(latest_observation)
+            if latest_observation.get("success"):
+                last_failing_test_summary = None
+                repeated_file_edits = {}
+            else:
+                if test_summary != last_failing_test_summary:
+                    repeated_file_edits = {}
+                last_failing_test_summary = test_summary
+
+        if tool_name == "write_file" and latest_observation.get("success") and last_failing_test_summary:
+            file_name = latest_observation["output"]["file_name"]
+            current_count = repeated_file_edits.get(file_name, 0) + 1
+            repeated_file_edits[file_name] = current_count
+
+            if current_count >= REPEATED_EDIT_LIMIT:
+                repeated_edit_observation = build_repeated_edit_observation(
+                    file_name,
+                    last_failing_test_summary,
+                    current_count,
+                )
+                store.create_event(
+                    task_id,
+                    "REPEATED_EDIT_DETECTED",
+                    repeated_edit_observation["output"],
+                )
+                print(f"Repeated edit detected: {file_name}")
+
         store.create_event(
             task_id,
             "AGENT_STEP_COMPLETED",
@@ -391,6 +453,8 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
                 "observation": latest_observation,
             }
         )
+        if repeated_edit_observation is not None:
+            latest_observation = repeated_edit_observation
         if iteration_number % MEMORY_UPDATE_INTERVAL == 0:
             memory_payload = build_memory_update_payload(goal, temporary_memory, history)
             memory_update = memory_updater.update(memory_payload)
@@ -407,9 +471,24 @@ def run_agent_loop(goal="Find why the tests are failing.", max_iterations=MAX_IT
             )
         # print(latest_observation)
 
-    final_answer = "Agent loop reached max_iterations."
+    planner_final_answer = "Agent loop reached max_iterations before the task was fully solved."
+    file_changes = get_file_changes_for_summary(store, task_id)
+    summary_payload = build_summary_payload(
+        goal,
+        history,
+        file_changes,
+        planner_final_answer,
+    )
+    summary = summarizer.summarize(summary_payload)
+    final_answer = summary["final_answer"]
+    store.create_event(
+        task_id,
+        "SUMMARY_CREATED",
+        {"summary": summary, "summary_payload": summary_payload},
+    )
     store.create_event(task_id, "TASK_FAILED", {"reason": final_answer})
     store.update_task_status(task_id, "FAILED", final_answer)
+    print(f"Final answer: {final_answer}")
     return {
         "task_id": task_id,
         "status": "FAILED",

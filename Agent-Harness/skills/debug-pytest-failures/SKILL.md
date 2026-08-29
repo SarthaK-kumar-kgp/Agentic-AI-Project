@@ -1,50 +1,44 @@
 # Debug Pytest Failures
 
-Use this skill when the task involves fixing failing pytest tests in a Python project.
+Use this skill when you need to find and fix bugs in a Python project that uses pytest.
+
+## When to Use
+- The task asks you to fix failing tests or debug a Python codebase.
+- You have a test suite runnable with `pytest`.
 
 ## Workflow
 
-1. **Run the test suite** to see the current state:
-   ```bash
-   python3 -m pytest
-   ```
-   Note the number of passed/failed tests and any error messages.
+1. **Run the test suite**
+   - Execute `python3 -m pytest` (or `pytest`) to see the current failures.
+   - Note the number of passed/failed tests and the failure messages.
 
-2. **Inspect the project structure** to locate the source files:
-   - Use `list_files` to see the repository layout.
-   - Identify the package/module directories (e.g., `src/`).
+2. **Inspect the failing code**
+   - Read the source files referenced in the test failures or that are likely related to the failing tests.
+   - Look for common issues: incorrect string parsing, missing normalization, mutating inputs, wrong rounding, incorrect lookups.
 
-3. **Read the relevant source files** that are likely causing failures:
-   - Look for files mentioned in the test output or that implement the tested functionality.
-   - Read the test files if available to understand expected behavior.
+3. **Make targeted fixes**
+   - Edit only the files that need changes.
+   - Keep changes minimal and focused on the failing behavior.
+   - Preserve existing functionality and style.
 
-4. **Make targeted fixes**:
-   - Address each failing test by modifying the source code.
-   - Keep changes minimal and focused on the reported issues.
-   - Common fixes include:
-     - Normalizing input data (e.g., stripping whitespace, converting formats).
-     - Avoiding mutation of input collections (use `sorted()` instead of `.sort()`).
-     - Handling edge cases like rounding or missing keys.
+4. **Rerun the tests**
+   - Run `python3 -m pytest` again.
+   - If tests still fail, read the new failure output, inspect the relevant code, and iterate.
 
-5. **Rerun the test suite** after each set of changes:
-   ```bash
-   python3 -m pytest
-   ```
-   - If failures remain, read the updated failure output and repeat steps 3-4.
-
-6. **Confirm all tests pass** before finishing.
+5. **Confirm all tests pass**
+   - Continue until the test suite reports all tests passing.
 
 ## Tips
+- Use `read_file` to understand the current implementation before editing.
+- Use `write_file` to apply changes.
+- Run tests after each logical change to catch regressions early.
+- If a test expects a specific format (e.g., date, case, rounding), make sure your fix matches that expectation.
 
-- Use `read_file` to inspect both source and test files before editing.
-- Prefer non-mutating operations to avoid side effects.
-- Normalize inputs consistently (e.g., lowercase, strip, convert date formats).
-- Round monetary calculations to the nearest cent when needed.
+## Example Scenario
+- Tests fail because amounts contain commas, dates are in MM/DD/YYYY, categories have mixed case, a function mutates its input, or tax calculations truncate instead of round.
+- Fix by stripping/parsing input, normalizing formats, using `sorted()` instead of in-place sort, and using `round()` instead of `int()`.
 
-## Example
-
-For a finance library with failing tests, the workflow would be:
-1. Run `pytest` to see failures.
-2. Read `importer.py`, `reports.py`, and `tax.py`.
-3. Fix parsing, date normalization, sorting, and tax rounding.
-4. Rerun `pytest` until all tests pass.
+## What Not to Do
+- Do not rewrite entire files unless necessary.
+- Do not change test files to make tests pass.
+- Do not ignore failure messages; use them to guide your fixes.

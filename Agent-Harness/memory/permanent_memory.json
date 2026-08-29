@@ -3,13 +3,109 @@
     "memory_item": {
       "id": "fact-001",
       "text": "The memory content.",
-      "tags": ["python", "pytest"],
+      "tags": [
+        "python",
+        "pytest"
+      ],
       "created_at": "2026-08-29T10:30:00",
       "updated_at": "2026-08-29T10:30:00"
     }
   },
-  "facts": [],
-  "lessons": [],
+  "facts": [
+    {
+      "id": "fact-001",
+      "text": "The ledgerlite finance repo has modules importer.py, reports.py, and tax.py, with data/tax_rules.json. Tests cover amount parsing, date normalization, category lowercasing, top transactions, and tax calculations.",
+      "tags": [
+        "ledgerlite",
+        "finance",
+        "repo-structure"
+      ],
+      "created_at": "2026-08-29T18:53:28",
+      "updated_at": "2026-08-29T18:53:28"
+    },
+    {
+      "id": "fact-002",
+      "text": "The taskflow repo has modules api.py, auth.py, invoices.py, and validation.py, with tests covering login status codes, username normalization, discount calculations, and email validation.",
+      "tags": [
+        "taskflow",
+        "repo-structure"
+      ],
+      "created_at": "2026-08-29T18:57:49",
+      "updated_at": "2026-08-29T18:57:49"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "lesson-002",
+      "text": "When fixing finance-related Python code, check for common data normalization issues: strip commas from amounts, normalize dates to ISO format, lowercase categories, normalize state codes, round instead of truncating monetary values, and apply discounts as percentages of subtotal rather than flat amounts.",
+      "tags": [
+        "finance",
+        "python",
+        "data-normalization",
+        "rounding",
+        "discounts"
+      ],
+      "created_at": "2026-08-29T18:53:28",
+      "updated_at": "2026-08-29T18:57:49"
+    },
+    {
+      "id": "lesson-001",
+      "text": "Avoid mutating input lists in functions; use sorted() instead of in-place sort when returning a subset to prevent side effects.",
+      "tags": [
+        "python",
+        "immutability",
+        "best-practice"
+      ],
+      "created_at": "2026-08-29T18:53:28",
+      "updated_at": "2026-08-29T18:53:28"
+    },
+    {
+      "id": "lesson-003",
+      "text": "When fixing Python repos, run pytest first, inspect failure output, then read the matching source and test files before editing. Iterate until all tests pass.",
+      "tags": [
+        "python",
+        "pytest",
+        "debugging"
+      ],
+      "created_at": "2026-08-29T18:57:49",
+      "updated_at": "2026-08-29T18:57:49"
+    },
+    {
+      "id": "lesson-004",
+      "text": "For finance-related Python code, check for common data normalization issues: strip commas from amounts, normalize dates to ISO format, lowercase categories, normalize state codes, and round instead of truncating monetary values.",
+      "tags": [
+        "finance",
+        "python",
+        "data-normalization",
+        "rounding"
+      ],
+      "created_at": "2026-08-29T18:57:49",
+      "updated_at": "2026-08-29T18:57:49"
+    }
+  ],
   "preferences": [],
-  "metrics": []
+  "metrics": [
+    {
+      "id": "metric-001",
+      "text": "ledgerlite test suite: started with 6 failed/4 passed, ended with 10 passed after fixes.",
+      "tags": [
+        "ledgerlite",
+        "pytest",
+        "test-results"
+      ],
+      "created_at": "2026-08-29T18:53:28",
+      "updated_at": "2026-08-29T18:56:30"
+    },
+    {
+      "id": "metric-002",
+      "text": "taskflow test suite: started with 6 failed/12 passed, ended with 18 passed after fixes.",
+      "tags": [
+        "taskflow",
+        "pytest",
+        "test-results"
+      ],
+      "created_at": "2026-08-29T18:57:49",
+      "updated_at": "2026-08-29T18:57:49"
+    }
+  ]
 }
