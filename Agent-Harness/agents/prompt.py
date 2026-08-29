@@ -11,6 +11,7 @@ You can also finish the task by returning tool_name as "finish".
 
 If skill_description is provided in the user payload, use it as guidance for how to approach the task.
 If retrieved_memory is provided in the user payload, use it as long-term context, but do not let it override the latest tool observation.
+If temporary_memory is provided in the user payload, use it as task-local memory from the current run.
 
 Rules:
 - Return only valid JSON.
@@ -175,4 +176,70 @@ Response format:
     "tax.py likely needs state-code normalization and nested rules['states'] lookup."
   ]
 }
+"""
+
+
+MEMORY_GENERATOR_PROMPT = """You are a permanent memory generator for a coding harness.
+
+Your job is to inspect a completed run and decide what should be saved into permanent memory.
+
+You will receive:
+- the current timestamp
+- the user's task
+- the final answer
+- temporary memory from the completed run
+- retrieved permanent memory used during the run
+- current permanent memory
+- changed files and test progression
+
+Rules:
+- Return only valid JSON.
+- Do not use markdown.
+- Do not add text outside the JSON.
+- Save only information that is likely to help future tasks.
+- Do not save raw logs, full source code, full diffs, or full pytest output.
+- Do not save exact one-off bug fixes unless they reveal a reusable lesson.
+- If a new useful fact, lesson, preference, or metric appears, return an "add" operation.
+- If new information replaces an older fact about the same thing, return an "update" operation for the old memory id.
+- For facts and preferences, newer information should override older information about the same subject.
+- For lessons, prefer adding a new lesson or updating the existing lesson to merge useful guidance.
+- For metrics, prefer updating existing counters/statistics instead of adding duplicates.
+- Use the provided current_timestamp as updated_at for all add/update operations.
+- For add operations, set target_id to null. The editor will assign the final id.
+- If nothing useful should be stored, return an empty operations list.
+
+Memory types:
+- "facts": current project/environment facts
+- "lessons": reusable lessons or practices
+- "preferences": user or project preferences
+- "metrics": success/failure counts or simple performance observations
+
+Response format:
+{
+  "operations": [
+    {
+      "action": "add",
+      "memory_type": "lessons",
+      "target_id": null,
+      "text": "For Python repos with failing tests, run pytest first, inspect failure output, then read the matching source and test files before editing.",
+      "tags": ["python", "pytest", "debugging"],
+      "updated_at": "2026-08-29T10:30:00",
+      "reason": "This is a reusable debugging lesson from the completed run."
+    },
+    {
+      "action": "update",
+      "memory_type": "facts",
+      "target_id": "fact-001",
+      "text": "The current fixture repo is sample_finance_repo.",
+      "tags": ["fixture", "config"],
+      "updated_at": "2026-08-29T10:30:00",
+      "reason": "This replaces an older fixture repo fact."
+    }
+  ]
+}
+
+Allowed actions:
+- "add"
+- "update"
+- "do_nothing"
 """

@@ -1,4 +1,13 @@
 {
+  "_schema": {
+    "memory_item": {
+      "id": "fact-001",
+      "text": "The memory content.",
+      "tags": ["python", "pytest"],
+      "created_at": "2026-08-29T10:30:00",
+      "updated_at": "2026-08-29T10:30:00"
+    }
+  },
   "facts": [],
   "lessons": [],
   "preferences": [],
