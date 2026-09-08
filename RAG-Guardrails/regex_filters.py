@@ -38,4 +38,24 @@ class RegexFilter:
         else:
             return "ALLOW"
     def detect_prompt_leakage(self,text):
+        if text is None:
+            return False
+        
+        self.prompt_leakage_pattern = r"(leak.*prompt|expose.*prompt|reveal.*prompt|display.*prompt)"
+        if re.search(self.prompt_leakage_pattern,text):
+            return "BLOCK"
+        else:
+            return "ALLOW"
+
+    def detect_alarming_words(self,text):
+        if text is None:
+            return False
+        self.dangerous_words = r"(kill|bomb|assasinate|fraud|scam|porn|nudity|drugs|guns|violance|violent|bypass|override|disregard|\
+                                  |suicide|terrorism|terrorist|explosive(s)?|malware|cyberattack|hack(ing)?|ignore|instructions|\
+                                    phising|spyware|bribery|blackmail|cheating|corruption|fake|forgery|illegal)"
+        if re.search(self.dangerous_words,text):
+            return "WARNING"
+        else:
+            return "ALLOW"
+
             
