@@ -1,4 +1,3 @@
-import numpy as np
 import json 
 from regex_filters import RegexFilter
 from semantic_checker import toxicity_check, semantic_similarity_check, harmful_intent_sentences
@@ -13,32 +12,37 @@ def input_orchestrator(text):
         return ""
 
     if rf.detect_prompt_injection(normalized_text) == "BLOCK":
-        return "BLOCK | Prompt Injection Detected"
+        return {"decision":"BLOCK",
+                "reason":"Prompt Injection Detected",
+                "layer":"Layer 1"}
     if rf.detect_dangerous_content(normalized_text) == "BLOCK":
-        return "BLOCK | Dangerous Content Detected"
+        return {"decision":"BLOCK | Dangerous Content Detected",
+                "reason":"Dangerous Content Detected",
+                "layer":"Layer 2"}
     if rf.detect_prompt_leakage(normalized_text) == "BLOCK":
-        return "BLOCK | Prompt Leakage Detected"
+        return {"decision":"BLOCK",
+                "reason":"Prompt Leakage Detected",
+                "layer":"Layer 3"}
 
     if rf.detect_alarming_words(normalized_text)=="WARNING":
         if toxicity_check(text)['toxicity']>0.5:
-            return "BLOCK | Toxicity Detected"
-        elif semantic_similarity_check(text, harmful_intent_sentences).max() > 0.7:
-            return "BLOCK | Dangerous Intent Detected"
+            return {"decision":"BLOCK",
+                    "reason":"Toxicity Detected",
+                    "layer":"Layer 4"}
+        elif semantic_similarity_check(text, harmful_intent_sentences).max() >= 0.5:
+            return {"decision":"BLOCK",
+                    "reason":"Dangerous Intent Detected",
+                    "layer":"Layer 4"}
+        
         else:
-            return "ALLOW | No Alarming Words Detected"
+            return {"decision":"ALLOW ",
+                    "reason":"No dangerous intent detected",
+                    "layer":"Layer 4"}
+    else:
+        return {"decision":"ALLOW",
+                "reason":"Didnt pass through any filters",
+                "layer":"Layer 4"}
 
 
     
 
-
-
-
-
-
-
-# Layer 0
-# Layer 1 where we do exact checks 
-# Layer 2 where we do keyword matching  
-# Layer 3 where we do toxicity matching one which passes is flagged fails 
-# Layser 4 one which passes goes to semantic match 
-# Layer All prompt cleaning
