@@ -1,0 +1,2 @@
+Agentic-Stitcher/**/*.png filter=lfs diff=lfs merge=lfs -text
+Agentic-Stitcher/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
