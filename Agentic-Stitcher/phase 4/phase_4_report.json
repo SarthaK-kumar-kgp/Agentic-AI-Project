@@ -10,30 +10,30 @@
       "planes_detected": 12,
       "floor_detected": true,
       "ceiling_detected": true,
-      "wall_plane_count": 8,
-      "floor_height": -1.4757428557317676,
-      "ceiling_height_estimate": 0.8279752232558834,
+      "wall_plane_count": 9,
+      "floor_height": -1.4762492248878052,
+      "ceiling_height_estimate": 0.7742154311977341,
       "room_outline": {
         "vertices": [
           [
-            -2.059647253831909,
-            4.424662269905729
+            0.29618443722381627,
+            5.43500406207997
           ],
           [
-            -0.5643551548865056,
-            -1.491433932664243
+            -3.145347036281414,
+            3.9931892366587314
           ],
           [
-            2.6358539497673172,
-            -0.06340469726617173
+            -0.19296393607136128,
+            -1.328341871333498
           ],
           [
-            0.30583552390841423,
-            5.4406396828657275
+            2.6316367684272897,
+            -0.05400933557756444
           ]
         ],
-        "area": 18.227517022899896,
-        "perimeter": 18.15785666414877,
+        "area": 20.525710260492012,
+        "perimeter": 18.88096577171478,
         "status": "estimated_convex_hull"
       },
       "plan_status": "diagnostic_only",
@@ -44,204 +44,204 @@
           "label": "floor",
           "orientation": "horizontal",
           "normal": [
-            -0.006641231797078175,
-            0.9999600515940501,
-            0.005982412242749299
+            -0.0063556965150144695,
+            0.9999630171295557,
+            0.005793918791704317
           ],
-          "offset": 1.4519146436984973,
-          "inlier_count": 18223,
-          "height_mean": -1.4757428557317676,
-          "height_minimum": -1.52311,
-          "height_maximum": -1.40213,
-          "normal_vertical_component": 0.9999600515940501,
-          "mean_residual": 0.008569112890181557
+          "offset": 1.4531595584921564,
+          "inlier_count": 18049,
+          "height_mean": -1.4762492248878052,
+          "height_minimum": -1.52538,
+          "height_maximum": -1.41957,
+          "normal_vertical_component": 0.9999630171295557,
+          "mean_residual": 0.00827659800077303
         },
         {
           "plane_number": 1,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.9206237358060703,
-            0.02377878895301561,
-            0.389726193970078
+            0.9199507916851662,
+            0.021957297594993246,
+            0.391418469109674
           ],
-          "offset": -2.366827861013237,
-          "inlier_count": 9603,
-          "height_mean": -0.3691675992790378,
-          "height_minimum": -1.52814,
+          "offset": -2.3674216335378366,
+          "inlier_count": 9706,
+          "height_mean": -0.37173883539517827,
+          "height_minimum": -1.54298,
           "height_maximum": 0.367018,
-          "normal_vertical_component": 0.02377878895301561,
-          "mean_residual": 0.014536624797240194
+          "normal_vertical_component": 0.021957297594993246,
+          "mean_residual": 0.014648040587065649
         },
         {
           "plane_number": 2,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.9339285106425146,
-            0.007203439397916412,
-            0.3573872514093012
+            -0.3639993914727128,
+            -0.030304526437391777,
+            0.9309060525557347
           ],
-          "offset": 0.35287582939230355,
-          "inlier_count": 6778,
-          "height_mean": -0.5360273774293302,
-          "height_minimum": -1.44068,
-          "height_maximum": 0.666291,
-          "normal_vertical_component": 0.007203439397916412,
-          "mean_residual": 0.010747389119224017
+          "offset": -3.5822490910381077,
+          "inlier_count": 6815,
+          "height_mean": -0.594209141327953,
+          "height_minimum": -1.43956,
+          "height_maximum": 0.145844,
+          "normal_vertical_component": 0.030304526437391777,
+          "mean_residual": 0.016262738101934703
         },
         {
           "plane_number": 3,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.354066602683178,
-            0.013713708857053569,
-            0.9351196581474355
+            0.9337936285180695,
+            0.0031925746372737248,
+            0.3577978015670907
           ],
-          "offset": -3.5429177872337223,
-          "inlier_count": 7121,
-          "height_mean": -0.7106528594031737,
-          "height_minimum": -1.4381,
-          "height_maximum": 0.145571,
-          "normal_vertical_component": 0.013713708857053569,
-          "mean_residual": 0.014472689010024447
+          "offset": 0.3484255064408047,
+          "inlier_count": 6315,
+          "height_mean": -0.5234426358441805,
+          "height_minimum": -1.44446,
+          "height_maximum": 0.666291,
+          "normal_vertical_component": 0.0031925746372737248,
+          "mean_residual": 0.009975896648135679
         },
         {
           "plane_number": 4,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.39459555474310304,
-            -0.015146821593170384,
-            0.9187300593605324
+            -0.39724697702323736,
+            0.015577003317840208,
+            0.9175795312742845
           ],
-          "offset": -4.900150694334875,
-          "inlier_count": 6236,
-          "height_mean": -0.4432436578604874,
-          "height_minimum": -1.53297,
-          "height_maximum": 0.656764,
-          "normal_vertical_component": 0.015146821593170384,
-          "mean_residual": 0.013872114617218803
+          "offset": -1.8752930297864134,
+          "inlier_count": 5613,
+          "height_mean": -0.6159682588011759,
+          "height_minimum": -1.43282,
+          "height_maximum": 0.15696,
+          "normal_vertical_component": 0.015577003317840208,
+          "mean_residual": 0.010241487046190404
         },
         {
           "plane_number": 5,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.39900832999905783,
-            0.006050916688039322,
-            0.9169273357243732
+            -0.3864057255800382,
+            -0.00018891448484907955,
+            0.9223288890359457
           ],
-          "offset": -1.8778072406837998,
-          "inlier_count": 6198,
-          "height_mean": -0.6255430306455309,
-          "height_minimum": -1.42136,
-          "height_maximum": 0.271251,
-          "normal_vertical_component": 0.006050916688039322,
-          "mean_residual": 0.009606486497271988
+          "offset": -4.8986927809749155,
+          "inlier_count": 6287,
+          "height_mean": -0.4372597948609194,
+          "height_minimum": -1.53297,
+          "height_maximum": 0.64625,
+          "normal_vertical_component": 0.00018891448484907955,
+          "mean_residual": 0.012429175660727503
         },
         {
           "plane_number": 6,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            -0.00861555386572786,
-            0.9997659674819143,
-            0.019843953651896756
+            -0.006050107666504287,
+            0.9999686630796482,
+            0.0051057865138476296
           ],
-          "offset": 1.033793157492292,
-          "inlier_count": 3911,
-          "height_mean": -1.0570732436716954,
-          "height_minimum": -1.18626,
-          "height_maximum": -0.966271,
-          "normal_vertical_component": 0.9997659674819143,
-          "mean_residual": 0.015274982010440166
+          "offset": 1.0457746833386607,
+          "inlier_count": 4194,
+          "height_mean": -1.0524279256080113,
+          "height_minimum": -1.11306,
+          "height_maximum": -1.00042,
+          "normal_vertical_component": 0.9999686630796482,
+          "mean_residual": 0.014651487358554097
         },
         {
           "plane_number": 7,
           "label": "ceiling",
           "orientation": "horizontal",
           "normal": [
-            0.027909284023397513,
-            0.9994888447362764,
-            -0.015592341486928816
+            0.04985398017035681,
+            0.9969901791927083,
+            -0.059373085269886994
           ],
-          "offset": 0.6808318556789296,
-          "inlier_count": 3110,
-          "height_mean": -0.6477676324758842,
-          "height_minimum": -0.788905,
-          "height_maximum": -0.49921,
-          "normal_vertical_component": 0.9994888447362764,
-          "mean_residual": 0.016678944005102773
+          "offset": 0.8272101170720823,
+          "inlier_count": 3233,
+          "height_mean": -0.7020337936900711,
+          "height_minimum": -0.985858,
+          "height_maximum": -0.445127,
+          "normal_vertical_component": 0.9969901791927083,
+          "mean_residual": 0.018112050213728456
         },
         {
           "plane_number": 8,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.4074937712787154,
-            -0.005355517662198299,
-            0.9131922824901774
+            -0.4112324793025008,
+            -0.00603033317316062,
+            0.9115105501575607
           ],
-          "offset": 1.1240913798189411,
-          "inlier_count": 3150,
-          "height_mean": -0.5111879115873016,
-          "height_minimum": -1.39661,
-          "height_maximum": 0.128162,
-          "normal_vertical_component": 0.005355517662198299,
-          "mean_residual": 0.01264459237590258
+          "offset": 1.1225423174172318,
+          "inlier_count": 3014,
+          "height_mean": -0.4989289520670206,
+          "height_minimum": -1.41819,
+          "height_maximum": 0.129791,
+          "normal_vertical_component": 0.00603033317316062,
+          "mean_residual": 0.012231315460597893
         },
         {
           "plane_number": 9,
-          "label": "horizontal_candidate",
-          "orientation": "horizontal",
+          "label": "wall",
+          "orientation": "vertical",
           "normal": [
-            0.020499904410044303,
-            0.9989539769674987,
-            -0.04087426843378724
+            0.9466929110207586,
+            0.0412502535395336,
+            0.31948544380920746
           ],
-          "offset": 0.9033101800161571,
-          "inlier_count": 2219,
-          "height_mean": -0.8149821586300136,
-          "height_minimum": -0.975894,
-          "height_maximum": -0.640901,
-          "normal_vertical_component": 0.9989539769674987,
-          "mean_residual": 0.018531875664890146
+          "offset": 0.26092767329186595,
+          "inlier_count": 2261,
+          "height_mean": -0.7504567898717383,
+          "height_minimum": -1.44229,
+          "height_maximum": -0.0332341,
+          "normal_vertical_component": 0.0412502535395336,
+          "mean_residual": 0.01808834252094965
         },
         {
           "plane_number": 10,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.9518474101997106,
-            -0.02347771018875974,
-            0.30567189079206597
+            0.8740052319073457,
+            -0.031449328970175286,
+            0.48489771530283865
           ],
-          "offset": 0.2554507380849934,
-          "inlier_count": 2095,
-          "height_mean": -0.7420269238663485,
-          "height_minimum": -1.4349,
-          "height_maximum": -0.0309134,
-          "normal_vertical_component": 0.02347771018875974,
-          "mean_residual": 0.016967986693063684
+          "offset": 0.7663343807310519,
+          "inlier_count": 1871,
+          "height_mean": -0.7027533410849813,
+          "height_minimum": -1.43306,
+          "height_maximum": 0.0883912,
+          "normal_vertical_component": 0.031449328970175286,
+          "mean_residual": 0.016167870924767104
         },
         {
           "plane_number": 11,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.9888082607954635,
-            -0.005241669056651118,
-            0.14909979305200696
+            -0.3735705387339406,
+            -0.03992392307299697,
+            0.9267422149424805
           ],
-          "offset": 0.7726761742227963,
-          "inlier_count": 1696,
-          "height_mean": -0.5523736746757075,
-          "height_minimum": -1.43075,
-          "height_maximum": 0.0968913,
-          "normal_vertical_component": 0.005241669056651118,
-          "mean_residual": 0.015160101177819938
+          "offset": -3.645328736856166,
+          "inlier_count": 1880,
+          "height_mean": -0.9806957377037234,
+          "height_minimum": -1.4381,
+          "height_maximum": 0.145924,
+          "normal_vertical_component": 0.03992392307299697,
+          "mean_residual": 0.012237713502065933
         }
       ],
       "assumptions": {
@@ -270,8 +270,8 @@
       "floor_detected": true,
       "ceiling_detected": true,
       "wall_plane_count": 0,
-      "floor_height": -1.4052011838630363,
-      "ceiling_height_estimate": 1.323441377677247,
+      "floor_height": -1.4062025289645186,
+      "ceiling_height_estimate": 1.3147800481567762,
       "room_outline": {
         "vertices": [],
         "area": null,
@@ -286,204 +286,204 @@
           "label": "floor",
           "orientation": "horizontal",
           "normal": [
-            0.0022134398702273136,
-            0.999997281569655,
-            -0.0007331693128814247
+            0.002298016890537549,
+            0.9999973593601268,
+            1.9777366861099205e-05
           ],
-          "offset": 1.4122007038326099,
-          "inlier_count": 21962,
-          "height_mean": -1.4052011838630363,
-          "height_minimum": -1.45171,
-          "height_maximum": -1.33752,
-          "normal_vertical_component": 0.999997281569655,
-          "mean_residual": 0.010073996008024184
+          "offset": 1.4104492078940818,
+          "inlier_count": 22096,
+          "height_mean": -1.4062025289645186,
+          "height_minimum": -1.45299,
+          "height_maximum": -1.34452,
+          "normal_vertical_component": 0.9999973593601268,
+          "mean_residual": 0.010055729471490766
         },
         {
           "plane_number": 1,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.0546170644290329,
-            0.9981417301666504,
-            0.027019673815215146
+            -0.02659321152499028,
+            0.9984542844276306,
+            0.04880412901482061
           ],
-          "offset": 0.8693833814010888,
-          "inlier_count": 5605,
-          "height_mean": -0.8251096205173953,
-          "height_minimum": -1.2173,
-          "height_maximum": -0.443201,
-          "normal_vertical_component": 0.9981417301666504,
-          "mean_residual": 0.020525264728672374
+          "offset": 0.48420231585895446,
+          "inlier_count": 5593,
+          "height_mean": -0.6711814471661005,
+          "height_minimum": -1.10993,
+          "height_maximum": -0.375747,
+          "normal_vertical_component": 0.9984542844276306,
+          "mean_residual": 0.0188047402107028
         },
         {
           "plane_number": 2,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.02977296023283433,
-            0.9993810315692093,
-            -0.018738318458101998
+            -0.03188680239891618,
+            0.9992335542970634,
+            0.022705413443279747
           ],
-          "offset": 0.5902494078567098,
-          "inlier_count": 5345,
-          "height_mean": -0.4819801854069224,
-          "height_minimum": -0.69597,
-          "height_maximum": -0.207821,
-          "normal_vertical_component": 0.9993810315692093,
-          "mean_residual": 0.019327395837055728
+          "offset": 0.3386438908253692,
+          "inlier_count": 5241,
+          "height_mean": -0.47390065521846975,
+          "height_minimum": -0.775766,
+          "height_maximum": -0.249171,
+          "normal_vertical_component": 0.9992335542970634,
+          "mean_residual": 0.020395476014339897
         },
         {
           "plane_number": 3,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.00755452566583553,
-            0.9997398338938055,
-            -0.02152193457731901
+            0.0918727639535866,
+            0.9941167489064378,
+            -0.057369720125021485
           ],
-          "offset": 0.366576379466381,
-          "inlier_count": 4987,
-          "height_mean": -0.2893004631040706,
-          "height_minimum": -0.428785,
-          "height_maximum": -0.0678461,
-          "normal_vertical_component": 0.9997398338938055,
-          "mean_residual": 0.01989306920686517
+          "offset": 0.8519594247128366,
+          "inlier_count": 4808,
+          "height_mean": -0.5286456106493344,
+          "height_minimum": -1.03165,
+          "height_maximum": 0.315011,
+          "normal_vertical_component": 0.9941167489064378,
+          "mean_residual": 0.01945113630613279
         },
         {
           "plane_number": 4,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.03336216668356899,
-            0.9993783758648117,
-            0.011394195363825839
+            -0.015340361770018596,
+            0.999670958015146,
+            0.02055842897317549
           ],
-          "offset": 0.7137764363377174,
-          "inlier_count": 4712,
-          "height_mean": -0.6813920539049236,
-          "height_minimum": -0.910813,
-          "height_maximum": -0.445101,
-          "normal_vertical_component": 0.9993783758648117,
-          "mean_residual": 0.02047972945022987
+          "offset": 0.24170646893678693,
+          "inlier_count": 4555,
+          "height_mean": -0.3354051427003293,
+          "height_minimum": -0.549986,
+          "height_maximum": -0.179321,
+          "normal_vertical_component": 0.999670958015146,
+          "mean_residual": 0.019588978042974554
         },
         {
           "plane_number": 5,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.008783067358424115,
-            0.9996988875899384,
-            -0.022912701264084248
+            -0.02687971665428426,
+            0.9989887255648057,
+            0.036041740066079186
           ],
-          "offset": 0.2579540078308189,
-          "inlier_count": 4445,
-          "height_mean": -0.17504232078335205,
-          "height_minimum": -0.316146,
-          "height_maximum": 0.0547402,
-          "normal_vertical_component": 0.9996988875899384,
-          "mean_residual": 0.019914316320878315
+          "offset": 0.42043509933149986,
+          "inlier_count": 4160,
+          "height_mean": -0.5849073971153845,
+          "height_minimum": -0.922349,
+          "height_maximum": -0.322436,
+          "normal_vertical_component": 0.9989887255648057,
+          "mean_residual": 0.019005668734244356
         },
         {
           "plane_number": 6,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.03825293378917991,
-            0.9979158099790432,
-            0.05196873339221322
+            0.1027650913484002,
+            0.9939975954137217,
+            -0.03752487590778034
           ],
-          "offset": 0.9188822697777443,
-          "inlier_count": 3492,
-          "height_mean": -1.0036701655211913,
-          "height_minimum": -1.35494,
-          "height_maximum": -0.580472,
-          "normal_vertical_component": 0.9979158099790432,
-          "mean_residual": 0.019454387389428392
+          "offset": 0.9795265171495026,
+          "inlier_count": 3769,
+          "height_mean": -0.6812864776147518,
+          "height_minimum": -1.21586,
+          "height_maximum": 0.0547402,
+          "normal_vertical_component": 0.9939975954137217,
+          "mean_residual": 0.018997372221058018
         },
         {
           "plane_number": 7,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.0401346612900468,
-            0.9941864927132905,
-            0.09991209471119983
+            -0.002372070525467761,
+            0.9999753212580479,
+            0.006612878063764496
           ],
-          "offset": 0.10373470238137161,
-          "inlier_count": 3298,
-          "height_mean": -0.3523588279275622,
-          "height_minimum": -0.940127,
-          "height_maximum": 0.0471886,
-          "normal_vertical_component": 0.9941864927132905,
-          "mean_residual": 0.019560512943095753
+          "offset": 0.17904891785640764,
+          "inlier_count": 3649,
+          "height_mean": -0.20225005316525074,
+          "height_minimum": -0.285885,
+          "height_maximum": -0.137018,
+          "normal_vertical_component": 0.9999753212580479,
+          "mean_residual": 0.019217714239338258
         },
         {
           "plane_number": 8,
-          "label": "horizontal_candidate",
+          "label": "ceiling",
           "orientation": "horizontal",
           "normal": [
-            0.07016088361499671,
-            0.9973279208090203,
-            0.02035850645601056
+            0.005967574878098895,
+            0.9998705947415846,
+            0.014939271106186657
           ],
-          "offset": 0.785058188239299,
-          "inlier_count": 3307,
-          "height_mean": -0.7152827320834594,
-          "height_minimum": -1.13709,
-          "height_maximum": -0.257442,
-          "normal_vertical_component": 0.9973279208090203,
-          "mean_residual": 0.019100464330288343
+          "offset": 0.07066693162203426,
+          "inlier_count": 3074,
+          "height_mean": -0.09142248080774235,
+          "height_minimum": -0.207821,
+          "height_maximum": 0.0234704,
+          "normal_vertical_component": 0.9998705947415846,
+          "mean_residual": 0.018854436999403326
         },
         {
           "plane_number": 9,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.05273806104464541,
-            0.9959574972412255,
-            0.07271423936372859
+            -0.006276358927767599,
+            0.9981919099127301,
+            0.05977891186184249
           ],
-          "offset": 0.02752136862497326,
-          "inlier_count": 3083,
-          "height_mean": -0.15339662050746025,
-          "height_minimum": -0.625537,
-          "height_maximum": 0.247916,
-          "normal_vertical_component": 0.9959574972412255,
-          "mean_residual": 0.019470059601143126
+          "offset": 0.6442265543985931,
+          "inlier_count": 3236,
+          "height_mean": -0.8500125389369592,
+          "height_minimum": -1.24779,
+          "height_maximum": -0.567348,
+          "normal_vertical_component": 0.9981919099127301,
+          "mean_residual": 0.02014611372368181
         },
         {
           "plane_number": 10,
-          "label": "ceiling",
+          "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.011603043398547537,
-            0.9996361642245915,
-            -0.02434971371981887
+            0.003090957452827892,
+            0.9966840507871934,
+            0.08131020162597181
           ],
-          "offset": 0.18817504726208314,
-          "inlier_count": 2850,
-          "height_mean": -0.08175980618578947,
-          "height_minimum": -0.237346,
-          "height_maximum": 0.159049,
-          "normal_vertical_component": 0.9996361642245915,
-          "mean_residual": 0.018365646500325225
+          "offset": 0.8369975507297238,
+          "inlier_count": 2756,
+          "height_mean": -1.048196915820029,
+          "height_minimum": -1.36532,
+          "height_maximum": -0.706211,
+          "normal_vertical_component": 0.9966840507871934,
+          "mean_residual": 0.01878857214053215
         },
         {
           "plane_number": 11,
           "label": "horizontal_candidate",
           "orientation": "horizontal",
           "normal": [
-            0.01171316885453279,
-            0.9996730496329053,
-            -0.02272873760313784
+            -0.007526181803994283,
+            0.9973092596515483,
+            0.07292185681079487
           ],
-          "offset": 0.4549299383447781,
-          "inlier_count": 2965,
-          "height_mean": -0.3777547831365936,
-          "height_minimum": -0.529424,
-          "height_maximum": -0.165143,
-          "normal_vertical_component": 0.9996730496329053,
-          "mean_residual": 0.01810037704344475
+          "offset": 0.7035634178686876,
+          "inlier_count": 2709,
+          "height_mean": -0.9303059782207457,
+          "height_minimum": -1.3723,
+          "height_maximum": -0.646376,
+          "normal_vertical_component": 0.9973092596515483,
+          "mean_residual": 0.018559621241805557
         }
       ],
       "assumptions": {
@@ -512,33 +512,29 @@
       "floor_detected": true,
       "ceiling_detected": true,
       "wall_plane_count": 8,
-      "floor_height": -1.4935661898261898,
-      "ceiling_height_estimate": 2.4389495363014806,
+      "floor_height": -1.4940499778862988,
+      "ceiling_height_estimate": 2.563852668822043,
       "room_outline": {
         "vertices": [
           [
-            5.673012396423463,
-            8.149141273272456
+            -3.0457314086671814,
+            4.107923754381079
           ],
           [
-            -3.0578165430213238,
-            4.137086370261905
+            -1.953527239365952,
+            2.0960699548892885
           ],
           [
-            -1.920610472267189,
-            2.02948748349982
+            6.389947386696957,
+            6.716154972976596
           ],
           [
-            7.764947208098607,
-            -3.1029046622388936
-          ],
-          [
-            6.396373498248344,
-            6.671741786554615
+            5.688707698264142,
+            8.127455971316545
           ]
         ],
-        "area": 63.12899880377396,
-        "perimeter": 34.479699248673406,
+        "area": 18.488752698845136,
+        "perimeter": 23.01729081565496,
         "status": "estimated_convex_hull"
       },
       "plan_status": "diagnostic_only",
@@ -549,204 +545,204 @@
           "label": "floor",
           "orientation": "horizontal",
           "normal": [
-            -0.0006272938623442883,
-            0.9999996549429768,
-            0.0005446249513000959
+            -0.0005928225445604654,
+            0.9999995503186403,
+            0.0007402188513234591
           ],
-          "offset": 1.4916837004890307,
-          "inlier_count": 10989,
-          "height_mean": -1.4935661898261898,
-          "height_minimum": -1.53361,
-          "height_maximum": -1.44809,
-          "normal_vertical_component": 0.9999996549429768,
-          "mean_residual": 0.006903138984490283
+          "offset": 1.4912164715336202,
+          "inlier_count": 10853,
+          "height_mean": -1.4940499778862988,
+          "height_minimum": -1.54367,
+          "height_maximum": -1.45117,
+          "normal_vertical_component": 0.9999995503186403,
+          "mean_residual": 0.006494838572627803
         },
         {
           "plane_number": 1,
-          "label": "wall",
-          "orientation": "vertical",
+          "label": "horizontal_candidate",
+          "orientation": "horizontal",
           "normal": [
-            0.8316867520432154,
-            -0.03359958318491789,
-            0.5542275836563955
+            0.024465270408843776,
+            0.9979549940313832,
+            -0.05905320001188961
           ],
-          "offset": -2.45349108497191,
-          "inlier_count": 4749,
-          "height_mean": -0.144361591021773,
-          "height_minimum": -1.4495,
-          "height_maximum": 0.987162,
-          "normal_vertical_component": 0.03359958318491789,
-          "mean_residual": 0.01847889050938614
+          "offset": -0.5438326429747383,
+          "inlier_count": 5180,
+          "height_mean": 0.7856380689189189,
+          "height_minimum": 0.424081,
+          "height_maximum": 1.17192,
+          "normal_vertical_component": 0.9979549940313832,
+          "mean_residual": 0.01769987554044902
         },
         {
           "plane_number": 2,
-          "label": "ceiling",
-          "orientation": "horizontal",
-          "normal": [
-            -0.014685338136577747,
-            0.9998871821147101,
-            0.003156562452905638
-          ],
-          "offset": -0.9454402763704386,
-          "inlier_count": 5504,
-          "height_mean": 0.9453833464752908,
-          "height_minimum": 0.797985,
-          "height_maximum": 1.06476,
-          "normal_vertical_component": 0.9998871821147101,
-          "mean_residual": 0.013538272682269176
-        },
-        {
-          "plane_number": 3,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.8763011444935173,
-            0.0096923690967719,
-            0.481666235209241
+            0.8789021905139741,
+            0.0011057460011164478,
+            0.47700075139932313
           ],
-          "offset": -2.283453837013548,
-          "inlier_count": 4810,
-          "height_mean": 0.2507458621769854,
-          "height_minimum": -1.44772,
+          "offset": -2.273904537956889,
+          "inlier_count": 7325,
+          "height_mean": 0.12523552456066894,
+          "height_minimum": -1.45562,
           "height_maximum": 1.57093,
-          "normal_vertical_component": 0.0096923690967719,
-          "mean_residual": 0.014620673710243164
+          "normal_vertical_component": 0.0011057460011164478,
+          "mean_residual": 0.016174212889069686
+        },
+        {
+          "plane_number": 3,
+          "label": "ceiling",
+          "orientation": "horizontal",
+          "normal": [
+            0.012834723590054192,
+            0.9970429065165494,
+            0.07576748930377981
+          ],
+          "offset": -1.5055363278272107,
+          "inlier_count": 4093,
+          "height_mean": 1.0698026909357439,
+          "height_minimum": 0.754443,
+          "height_maximum": 1.53073,
+          "normal_vertical_component": 0.9970429065165494,
+          "mean_residual": 0.01753050535555095
         },
         {
           "plane_number": 4,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.4175232970829263,
-            0.011545137380184844,
-            0.9085928715304095
+            -0.4180020310854879,
+            -0.015257553534119745,
+            0.9083179559320406
           ],
-          "offset": -5.01839340299462,
-          "inlier_count": 4864,
-          "height_mean": -0.2868742903061266,
-          "height_minimum": -1.45313,
-          "height_maximum": 0.918917,
-          "normal_vertical_component": 0.011545137380184844,
-          "mean_residual": 0.013453688137792541
+          "offset": -5.027218370188091,
+          "inlier_count": 5119,
+          "height_mean": -0.2880728096421177,
+          "height_minimum": -1.46288,
+          "height_maximum": 0.975482,
+          "normal_vertical_component": 0.015257553534119745,
+          "mean_residual": 0.013317402576352244
         },
         {
           "plane_number": 5,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.8800402258990269,
-            0.00703504618832534,
-            0.4748470373970106
+            0.8787759612279651,
+            0.012384843576732585,
+            0.47707381569045054
           ],
-          "offset": 0.7370256620345977,
-          "inlier_count": 5661,
-          "height_mean": 0.17475371285847024,
-          "height_minimum": -1.44578,
-          "height_maximum": 2.10323,
-          "normal_vertical_component": 0.00703504618832534,
-          "mean_residual": 0.010229057003848864
+          "offset": 0.7352362614976268,
+          "inlier_count": 4551,
+          "height_mean": 0.03391038888617886,
+          "height_minimum": -1.44909,
+          "height_maximum": 1.461,
+          "normal_vertical_component": 0.012384843576732585,
+          "mean_residual": 0.006512042868391833
         },
         {
           "plane_number": 6,
-          "label": "wall",
-          "orientation": "vertical",
+          "label": "horizontal_candidate",
+          "orientation": "horizontal",
           "normal": [
-            0.8752076754702512,
-            -0.0217903584379759,
-            0.4832563554440893
+            0.049101437269625646,
+            0.9949489287884932,
+            -0.08755385748604763
           ],
-          "offset": -5.328988340412313,
-          "inlier_count": 5260,
-          "height_mean": 0.08795619102055136,
-          "height_minimum": -1.45018,
-          "height_maximum": 1.59547,
-          "normal_vertical_component": 0.0217903584379759,
-          "mean_residual": 0.015432554044396918
+          "offset": 1.0658709380867135,
+          "inlier_count": 3112,
+          "height_mean": -0.7021764569730077,
+          "height_minimum": -1.2375,
+          "height_maximum": -0.0875635,
+          "normal_vertical_component": 0.9949489287884932,
+          "mean_residual": 0.01926590071214405
         },
         {
           "plane_number": 7,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            -0.48553201866653106,
-            -0.0870818194616323,
-            0.8698709189120275
+            -0.48348581883245406,
+            -0.062282461008818235,
+            0.8731336427137582
           ],
-          "offset": -2.8279724831608575,
-          "inlier_count": 3380,
-          "height_mean": 0.05651377866863905,
-          "height_minimum": -1.44264,
-          "height_maximum": 1.27634,
-          "normal_vertical_component": 0.0870818194616323,
-          "mean_residual": 0.015112051306265367
+          "offset": -2.8677050215246274,
+          "inlier_count": 4096,
+          "height_mean": 0.06073565933527833,
+          "height_minimum": -1.45582,
+          "height_maximum": 1.56846,
+          "normal_vertical_component": 0.062282461008818235,
+          "mean_residual": 0.015285048530122034
         },
         {
           "plane_number": 8,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.8979045337608185,
-            -0.02220058121448867,
-            0.43963005179981285
+            0.8954093188900462,
+            -0.017338762441621653,
+            0.44490619119299385
           ],
-          "offset": -8.709588988419165,
-          "inlier_count": 4293,
-          "height_mean": 0.10826475964104355,
-          "height_minimum": -1.4518,
+          "offset": -8.735582343396937,
+          "inlier_count": 4319,
+          "height_mean": 0.075925179626997,
+          "height_minimum": -1.46341,
           "height_maximum": 1.57595,
-          "normal_vertical_component": 0.02220058121448867,
-          "mean_residual": 0.010839833456287643
+          "normal_vertical_component": 0.017338762441621653,
+          "mean_residual": 0.008650619787541605
         },
         {
           "plane_number": 9,
-          "label": "horizontal_candidate",
-          "orientation": "horizontal",
+          "label": "wall",
+          "orientation": "vertical",
           "normal": [
-            0.03583741821638824,
-            0.9993573798693675,
-            -0.0007118681173674063
+            0.8917952135364878,
+            -0.050625923762406884,
+            0.4495979458990145
           ],
-          "offset": -0.7108239373078791,
-          "inlier_count": 3158,
-          "height_mean": 0.7247310259658011,
-          "height_minimum": 0.435946,
-          "height_maximum": 0.81933,
-          "normal_vertical_component": 0.9993573798693675,
-          "mean_residual": 0.014082073208385658
+          "offset": -5.25199453404914,
+          "inlier_count": 3902,
+          "height_mean": 0.03611368796002052,
+          "height_minimum": -1.45516,
+          "height_maximum": 1.59292,
+          "normal_vertical_component": 0.050625923762406884,
+          "mean_residual": 0.018014656210951885
         },
         {
           "plane_number": 10,
-          "label": "horizontal_candidate",
-          "orientation": "horizontal",
+          "label": "wall",
+          "orientation": "vertical",
           "normal": [
-            0.009868145357184093,
-            0.9997146724385523,
-            -0.021753009407615813
+            0.8800661489028949,
+            -0.02231190294611077,
+            0.4743266306482811
           ],
-          "offset": 0.7920590902019936,
-          "inlier_count": 2861,
-          "height_mean": -0.7074310290108354,
-          "height_minimum": -0.867461,
-          "height_maximum": -0.533773,
-          "normal_vertical_component": 0.9997146724385523,
-          "mean_residual": 0.018400905404636254
+          "offset": -2.118044399722105,
+          "inlier_count": 2590,
+          "height_mean": -0.06211599856293435,
+          "height_minimum": -1.46185,
+          "height_maximum": 1.57332,
+          "normal_vertical_component": 0.02231190294611077,
+          "mean_residual": 0.014555321327241749
         },
         {
           "plane_number": 11,
           "label": "wall",
           "orientation": "vertical",
           "normal": [
-            0.9271990874463444,
-            -0.010398986006390184,
-            0.3744245095192158
+            0.8883042074694637,
+            0.008987152495007351,
+            0.45916757951980824
           ],
-          "offset": -6.053379983082003,
-          "inlier_count": 2331,
-          "height_mean": -0.16567583450278853,
-          "height_minimum": -1.45102,
-          "height_maximum": 1.58971,
-          "normal_vertical_component": 0.010398986006390184,
-          "mean_residual": 0.01617735677439221
+          "offset": -6.383973490704083,
+          "inlier_count": 3191,
+          "height_mean": -0.2027586026750235,
+          "height_minimum": -1.46412,
+          "height_maximum": 1.5943,
+          "normal_vertical_component": 0.008987152495007351,
+          "mean_residual": 0.011554857186388346
         }
       ],
       "assumptions": {
