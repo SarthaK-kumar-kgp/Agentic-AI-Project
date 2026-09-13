@@ -140,3 +140,121 @@ phase 6/outputs/
 ```
 
 No GPU, trained vision model, or annotation dataset is required for this first prototype.
+
+## Project status after Phases 0–6
+
+This section records why development is paused. The current output is a useful technical prototype, but it is not ready to claim accurate room reconstruction or assignment-level compliance.
+
+### Confirmed missing information
+
+The data provider has not supplied or confirmed:
+
+- Depth units, such as millimetres or metres
+- Camera coordinate axes
+- World coordinate axes
+- Whether odometry poses are camera-to-world or world-to-camera
+- Quaternion order and rotation direction
+- Sensor-to-camera extrinsic calibration
+- Which intrinsic calibration source is authoritative
+- Exact RGB, depth, confidence, IMU, and odometry timestamp relationship
+- Physical room measurements for walls, floor area, openings, and ceiling height
+- A reference floor plan or LiDAR reconstruction for comparison
+- Room-transition frame labels or room names in the long scan
+- At least two comparable captures of the same room for formal repeatability
+- A multi-room benchmark with confirmed room adjacency and connector labels
+- Still photos collected specifically for the photo tier
+- Furnished-room damage examples
+- Damage-class, region, and extent annotations
+
+### Assumptions currently used in the code
+
+These assumptions were necessary to build the prototype but remain unverified:
+
+- Depth is converted using a scale of `0.001`.
+- Intrinsics are scaled from `1920×1440` to the `256×192` depth resolution.
+- Odometry uses quaternion order `qx, qy, qz, qw`.
+- Odometry is interpreted provisionally as camera-to-world.
+- The odometry position values are treated as metric.
+- Confidence value `1` is used as the minimum accepted confidence.
+- A provisional up axis and horizontal plane are selected for plan extraction.
+
+If any of these assumptions is wrong, every later geometric result can be wrong even when the code runs successfully.
+
+### Problems found during implementation
+
+#### Phase 0 — Dataset understanding
+
+- The files are structurally complete, but important physical conventions are undocumented.
+- The three folders are different trajectories and coverage patterns, not identical repetitions.
+- They cannot be used as a true train/validation/test split or formal repeatability benchmark.
+
+#### Phase 1 — Loading and validation
+
+- Depth, confidence, and odometry frame IDs match and timestamps are sequential.
+- This verifies file alignment, but not physical RGB/depth alignment or pose correctness.
+
+#### Phase 2 — Sensor diagnostics
+
+- Depth and confidence contain useful structure.
+- Raw black-looking depth/confidence images are display artifacts caused by their numeric range; normalized previews are required.
+- RGB video synchronization was not fully verified because a usable MP4 decoder was unavailable in the original environment.
+
+#### Phase 3 — Point-cloud reconstruction
+
+- Single-frame point clouds look coherent.
+- Accumulated clouds contain duplicated, smeared, or displaced surfaces.
+- The depth projection and scale are still provisional.
+- The accumulated result depends heavily on the unverified pose interpretation.
+
+#### Phase 3.5 — Pose calibration experiments
+
+- Pairwise ICP often produced high local matching scores but did not improve the complete accumulated cloud.
+- Open3D ICP crashed on this machine, so an isolated NumPy/SciPy implementation was used for experimentation.
+- Constrained ICP mostly rejected its own corrections and still did not outperform raw odometry.
+- This indicates that local frame alignment alone is not solving the global calibration problem.
+
+#### Phase 4 — Room-plan extraction
+
+- RANSAC can find large flat regions, but it may detect duplicate or incorrect planes when the cloud is scattered.
+- Floor, ceiling, wall counts, room outlines, and dimensions are diagnostic only.
+- The reported plans are not centimetre-accurate measurements.
+- RANSAC-based results can vary slightly between runs because plane sampling is not a physical ground-truth evaluation.
+
+#### Phase 5 — Cross-capture evaluation
+
+- The same Phase 4 parameters were compared across all three captures.
+- Estimated outlines and ceiling heights differed substantially.
+- The floor-focused capture did not produce a usable wall outline.
+- This confirms weak robustness, but it is not a formal accuracy or repeatability test without measurements and comparable repeated captures.
+
+#### Phase 6 — Multi-room and loop-closure experiments
+
+- The long capture contains revisited geometry and is suitable for a prototype loop-closure experiment.
+- Odometry proximity generated many false or ambiguous candidates.
+- Only two loop edges passed the stricter pose-correction safety check.
+- Pose-graph optimization reduced those loop errors, but the optimized global cloud had a worse dominant-plane score than raw odometry.
+- The optimizer did not produce a trustworthy final stitched map.
+- Room boundaries and room adjacency are still not automatically verified.
+
+### Data that is not available for later assignment requirements
+
+The following cannot be evaluated honestly with the current files:
+
+- Wall-length accuracy
+- Floor-area accuracy
+- Ceiling-height accuracy
+- Door and window measurement accuracy
+- Formal repeatability
+- Multi-room adjacency accuracy
+- Damage detection accuracy
+- Concealed-damage classification accuracy
+- Uncertainty calibration against real errors
+- Final unseen walk-in performance
+
+Damage detection in particular cannot be trained or evaluated because no labelled damaged-room images, damage classes, damaged regions, or metric extents were provided. A vision model would not solve the missing ground truth by itself.
+
+### Current recommendation
+
+The raw odometry reconstruction should remain the reference prototype. The ICP and pose-graph outputs should be treated as experiments, not replacements.
+
+The project should pause before further stitching or damage work. The most valuable next action is to obtain the missing calibration conventions and a small set of physical measurements. Once those are confirmed, the pipeline can be rerun from Phase 3 with corrected assumptions and evaluated properly.
